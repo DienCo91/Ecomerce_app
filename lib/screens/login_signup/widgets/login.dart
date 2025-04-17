@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/albums.dart';
+import 'package:flutter_app/models/login_request.dart';
 import 'package:flutter_app/screens/login_signup/widgets/text_form_field_custome.dart';
+import 'package:flutter_app/services/album_service.dart';
+import 'package:flutter_app/services/auth_service.dart';
+import 'package:flutter_app/utils/api_constants.dart';
 import 'package:flutter_app/utils/assets_animation.dart';
 import 'package:flutter_app/utils/assets_image.dart';
 import 'package:flutter_app/common/constants.dart';
@@ -17,6 +22,8 @@ class _LoginState extends State<Login> {
   late TextEditingController _controllerInputEmail;
   late TextEditingController _controllerInputPassword;
   late FocusNode _focusNodePassword;
+  Future<Album>? _futureAlbum;
+  bool _isLoadingBtn = false;
 
   @override
   void initState() {
@@ -41,11 +48,27 @@ class _LoginState extends State<Login> {
     }
   }
 
-  void handleLogin() {
+  void handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Submitted !")));
+      setState(() {
+        _isLoadingBtn = true;
+      });
+      try {
+        final data = await AuthService().loginUser(
+          LoginRequest(
+            email: _controllerInputEmail.text,
+            password: _controllerInputPassword.text,
+          ),
+        );
+
+        print(data.user.email);
+      } catch (e) {
+        print("Error ${e}");
+      } finally {
+        setState(() {
+          _isLoadingBtn = false;
+        });
+      }
     }
   }
 
@@ -111,7 +134,6 @@ class _LoginState extends State<Login> {
                           margin: EdgeInsets.only(top: 32),
                           child: ElevatedButton.icon(
                             onPressed: handleLogin,
-
                             label: Padding(
                               padding: const EdgeInsets.only(
                                 top: 10,
@@ -127,7 +149,7 @@ class _LoginState extends State<Login> {
                             ),
                             style: ButtonStyle(
                               backgroundColor: WidgetStatePropertyAll<Color>(
-                                Colors.blue,
+                                _isLoadingBtn ? Colors.grey : Colors.blue,
                               ),
                               shape: WidgetStatePropertyAll(
                                 RoundedRectangleBorder(
@@ -138,14 +160,19 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                             //TODO: Loading when login
-                            // icon: SizedBox(
-                            //   width: 20,
-                            //   height: 20,z
-                            //   child: CircularProgressIndicator(
-                            //     strokeWidth: 2,
-                            //     valueColor: AlwaysStoppedAnimation(Colors.grey),
-                            //   ),
-                            // ),
+                            icon:
+                                _isLoadingBtn
+                                    ? SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation(
+                                          Colors.white,
+                                        ),
+                                      ),
+                                    )
+                                    : null,
                           ),
                         ),
                         Container(

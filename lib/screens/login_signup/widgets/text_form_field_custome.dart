@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_app/common/constants.dart';
+
+class TextFormFieldCustom extends StatefulWidget {
+  const TextFormFieldCustom({
+    super.key,
+    required TextEditingController controllerInput,
+    FocusNode? focusNode,
+    FieldType? type = FieldType.text,
+    required String label,
+    Widget? prefixIcon,
+    void Function(String)? onFieldSubmitted,
+  }) : _controllerInput = controllerInput,
+       _focusNode = focusNode,
+       _type = type,
+       _label = label,
+       _prefixIcon = prefixIcon,
+       _onFieldSubmitted = onFieldSubmitted;
+
+  final TextEditingController _controllerInput;
+  final FocusNode? _focusNode;
+  final FieldType? _type;
+  final String _label;
+  final Widget? _prefixIcon;
+  final void Function(String)? _onFieldSubmitted;
+
+  @override
+  State<TextFormFieldCustom> createState() => _TextFormFieldCustomState();
+}
+
+class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
+  bool _isShowPassword = false;
+
+  String? handleValidator(value) {
+    if (value == null || value.isEmpty) {
+      return '${widget._label} required !';
+    } else if (!emailRegex.hasMatch(value) && widget._type == FieldType.email) {
+      return 'Email invalid';
+    }
+    return null;
+  }
+
+  void handleShowPassword() {
+    print("1");
+    setState(() {
+      _isShowPassword = !_isShowPassword;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      focusNode: widget._focusNode,
+      controller: widget._controllerInput,
+      style: TextStyle(fontSize: 18),
+      obscureText: !_isShowPassword && widget._type == FieldType.password,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      decoration: InputDecoration(
+        label: Text(widget._label),
+        floatingLabelStyle: TextStyle(color: Colors.blue, fontSize: 18),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.blue, width: 1),
+        ),
+        prefixIcon: widget._prefixIcon,
+        suffixIcon:
+            widget._type == FieldType.password
+                ? IconButton(
+                  onPressed: handleShowPassword,
+                  icon: Icon(
+                    _isShowPassword ? Icons.visibility_off : Icons.visibility,
+                  ),
+                )
+                : null,
+      ),
+      onFieldSubmitted: widget?._onFieldSubmitted,
+      validator: handleValidator,
+    );
+  }
+}

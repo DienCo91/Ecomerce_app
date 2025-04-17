@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/login_signup/widgets/login.dart';
-import 'package:flutter_app/widgets/app_scaffold.dart';
+import 'package:flutter_app/screens/login_signup/widgets/sign_up.dart';
 
 class LoginAndSignUp extends StatelessWidget {
   const LoginAndSignUp({super.key});
@@ -10,7 +10,7 @@ class LoginAndSignUp extends StatelessWidget {
     return DefaultTabController(
       length: 2,
 
-      child: AppScaffold(
+      child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 20,
           bottom: TabBar(
@@ -23,7 +23,7 @@ class LoginAndSignUp extends StatelessWidget {
             tabs: [Tab(text: "Login"), Tab(text: "Sign Up")],
           ),
         ),
-        body: TabBarView(children: [Login(), Text("Sign Up")]),
+        body: TabBarView(children: [Login(), SignUp()]),
       ),
     );
   }

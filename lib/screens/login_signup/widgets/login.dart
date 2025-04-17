@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/login_signup/widgets/text_form_field_custome.dart';
+import 'package:flutter_app/utils/assets_animation.dart';
 import 'package:flutter_app/utils/assets_image.dart';
 import 'package:flutter_app/common/constants.dart';
+import 'package:lottie/lottie.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -14,7 +17,6 @@ class _LoginState extends State<Login> {
   late TextEditingController _controllerInputEmail;
   late TextEditingController _controllerInputPassword;
   late FocusNode _focusNodePassword;
-  bool _isShowPassword = false;
 
   @override
   void initState() {
@@ -39,216 +41,220 @@ class _LoginState extends State<Login> {
     }
   }
 
-  void handleShowPassword() {
-    setState(() {
-      _isShowPassword = !_isShowPassword;
-    });
+  void handleLogin() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Submitted !")));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: 48, bottom: 48),
-            child: Image(image: AssetsImages.logoApp, width: 120, height: 120),
-          ),
-          Form(
-            key: _formKey,
-            child: Column(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height - 100,
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 500,
+              left: -10,
+              right: 0,
+              child: Image(image: AssetsImages.imageBar2, fit: BoxFit.cover),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Image(
+                image: AssetsImages.imageBar,
+                fit: BoxFit.cover,
+                height: 600,
+              ),
+            ),
+            Column(
               children: [
-                TextFormField(
-                  controller: _controllerInputEmail,
-                  style: TextStyle(fontSize: 20),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                    label: Text("Email"),
-                    floatingLabelStyle: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 18,
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1),
-                    ),
-                    prefixIcon: Icon(Icons.email),
-                  ),
-                  onFieldSubmitted:
-                      (value) => _focusNodePassword.requestFocus(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email required !';
-                    } else if (!emailRegex.hasMatch(value)) {
-                      return 'Email invalid';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 26),
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  focusNode: _focusNodePassword,
-                  controller: _controllerInputPassword,
-                  style: TextStyle(fontSize: 20),
-                  obscureText: !_isShowPassword,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password required !';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    label: Text("Password"),
-                    floatingLabelStyle: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 18,
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1),
-                    ),
-                    prefixIcon: Icon(Icons.password),
-                    suffixIcon: IconButton(
-                      onPressed: handleShowPassword,
-                      icon: Icon(
-                        _isShowPassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                    ),
-                  ),
+                Lottie.asset(
+                  AssetsLottie.login,
+                  width: 300,
+                  height: 300,
+                  fit: BoxFit.contain,
+                  repeat: true,
+                  animate: true,
                 ),
                 Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(top: 32),
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-
-                    label: Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll<Color>(
-                        Colors.blue,
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
-                      ),
-                    ),
-                    //TODO: Loading when login
-                    // icon: SizedBox(
-                    //   width: 20,
-                    //   height: 20,z
-                    //   child: CircularProgressIndicator(
-                    //     strokeWidth: 2,
-                    //     valueColor: AlwaysStoppedAnimation(Colors.grey),
-                    //   ),
-                    // ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 32),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 24,
-                    children: [
-                      Container(
-                        width: 120,
-                        height: 2,
-                        color: const Color.fromARGB(80, 158, 158, 158),
-                      ),
-                      Text(
-                        "OR",
-                        style: TextStyle(
-                          color: Color.fromARGB(168, 0, 0, 0),
-                          fontSize: 14,
-                        ),
-                      ),
-                      Container(
-                        width: 120,
-                        height: 2,
-                        color: const Color.fromARGB(80, 158, 158, 158),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(top: 32, bottom: 16),
-                  child: OutlinedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll<Color>(
-                        Colors.white,
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
-                      ),
-                      side: WidgetStatePropertyAll<BorderSide>(
-                        BorderSide(
-                          color: Color.fromARGB(86, 63, 63, 63),
-                          width: 1,
-                        ),
-                      ),
-                    ),
-
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 10,
+                  padding: EdgeInsets.only(left: 32, right: 32),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
                       children: [
-                        Image(
-                          image: AssetsImages.iconGoogle,
-                          width: 20,
-                          height: 20,
+                        TextFormFieldCustom(
+                          controllerInput: _controllerInputEmail,
+                          onFieldSubmitted:
+                              (value) => _focusNodePassword.requestFocus(),
+                          type: FieldType.email,
+                          label: "Email",
+                          prefixIcon: Icon(Icons.email),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          child: Text(
-                            "Login with Google",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.normal,
+                        SizedBox(height: 20),
+                        TextFormFieldCustom(
+                          controllerInput: _controllerInputPassword,
+                          type: FieldType.password,
+                          label: "Password",
+                          prefixIcon: Icon(Icons.password),
+                          focusNode: _focusNodePassword,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(top: 32),
+                          child: ElevatedButton.icon(
+                            onPressed: handleLogin,
+
+                            label: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 10,
+                                bottom: 10,
+                              ),
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
                             ),
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll<Color>(
+                                Colors.blue,
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            //TODO: Loading when login
+                            // icon: SizedBox(
+                            //   width: 20,
+                            //   height: 20,z
+                            //   child: CircularProgressIndicator(
+                            //     strokeWidth: 2,
+                            //     valueColor: AlwaysStoppedAnimation(Colors.grey),
+                            //   ),
+                            // ),
                           ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 24),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            spacing: 24,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 2,
+                                color: const Color.fromARGB(80, 158, 158, 158),
+                              ),
+                              Text(
+                                "OR",
+                                style: TextStyle(
+                                  color: Color.fromARGB(168, 0, 0, 0),
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Container(
+                                width: 120,
+                                height: 2,
+                                color: const Color.fromARGB(80, 158, 158, 158),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(top: 24, bottom: 16),
+                          child: OutlinedButton(
+                            onPressed: () {},
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll<Color>(
+                                Colors.white,
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                ),
+                              ),
+                              side: WidgetStatePropertyAll<BorderSide>(
+                                BorderSide(
+                                  color: Color.fromARGB(86, 63, 63, 63),
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              spacing: 10,
+                              children: [
+                                Image(
+                                  image: AssetsImages.iconGoogle,
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 10,
+                                    bottom: 10,
+                                  ),
+                                  child: Text(
+                                    "Login with Google",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // icon: SizedBox(
+                            //   width: 20,
+                            //   height: 20,z
+                            //   child: CircularProgressIndicator(
+                            //     strokeWidth: 2,
+                            //     valueColor: AlwaysStoppedAnimation(Colors.grey),
+                            //   ),
+                            // ),
+                          ),
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Don't have an account ?"),
+                            TextButton(
+                              onPressed: handleGoSignUp,
+                              child: Text(
+                                "Sign Up",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    // icon: SizedBox(
-                    //   width: 20,
-                    //   height: 20,z
-                    //   child: CircularProgressIndicator(
-                    //     strokeWidth: 2,
-                    //     valueColor: AlwaysStoppedAnimation(Colors.grey),
-                    //   ),
-                    // ),
                   ),
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Don't have an account ?"),
-                    TextButton(
-                      onPressed: handleGoSignUp,
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

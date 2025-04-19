@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/constants.dart';
+import 'package:flutter_app/controllers/auth_controller.dart';
+import 'package:flutter_app/models/register_request.dart';
+import 'package:flutter_app/screens/home/index.dart';
 import 'package:flutter_app/screens/login_signup/widgets/text_form_field_custome.dart';
+import 'package:flutter_app/services/auth_service.dart';
 import 'package:flutter_app/utils/assets_animation.dart';
 import 'package:flutter_app/utils/assets_image.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class SignUp extends StatefulWidget {
@@ -21,6 +26,8 @@ class _SignUpState extends State<SignUp> {
   final FocusNode _firstNameFocus = FocusNode();
   final FocusNode _lastNameFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  bool _isLoading = false;
+  final AuthController auth = Get.put(AuthController());
 
   @override
   void dispose() {
@@ -43,7 +50,36 @@ class _SignUpState extends State<SignUp> {
       }
     }
 
-    void handleSignUp() {}
+    void handleSignUp() async {
+      if (_formKey.currentState!.validate()) {
+        setState(() {
+          _isLoading = true;
+        });
+        try {
+          final data = await AuthService().registerUser(
+            RegisterRequest(
+              email: _controllerInputEmail.text,
+              password: _controllerInputPassword.text,
+              firstName: _controllerInputFirstName.text,
+              lastName: _controllerInputLastName.text,
+            ),
+          );
+
+          auth.setUser(data);
+          Get.offAll(Home());
+
+          setState(() {
+            _isLoading = false;
+          });
+        } catch (e) {
+          print("Error ${e}");
+        } finally {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    }
 
     return SingleChildScrollView(
       child: SingleChildScrollView(
@@ -125,7 +161,7 @@ class _SignUpState extends State<SignUp> {
                             width: double.infinity,
                             margin: EdgeInsets.only(top: 32),
                             child: ElevatedButton.icon(
-                              onPressed: handleSignUp,
+                              onPressed: _isLoading ? null : handleSignUp,
 
                               label: Padding(
                                 padding: const EdgeInsets.only(
@@ -142,7 +178,7 @@ class _SignUpState extends State<SignUp> {
                               ),
                               style: ButtonStyle(
                                 backgroundColor: WidgetStatePropertyAll<Color>(
-                                  Colors.blue,
+                                  !_isLoading ? Colors.blue : Colors.grey,
                                 ),
                                 shape: WidgetStatePropertyAll(
                                   RoundedRectangleBorder(
@@ -152,15 +188,19 @@ class _SignUpState extends State<SignUp> {
                                   ),
                                 ),
                               ),
-                              //TODO: Loading when login
-                              // icon: SizedBox(
-                              //   width: 20,
-                              //   height: 20,z
-                              //   child: CircularProgressIndicator(
-                              //     strokeWidth: 2,
-                              //     valueColor: AlwaysStoppedAnimation(Colors.grey),
-                              //   ),
-                              // ),
+                              icon:
+                                  _isLoading
+                                      ? SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor: AlwaysStoppedAnimation(
+                                            Colors.white,
+                                          ),
+                                        ),
+                                      )
+                                      : null,
                             ),
                           ),
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/providers/app_state.dart';
 import 'package:flutter_app/screens/login_signup/index.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
-      child: MaterialApp(
+      child: GetMaterialApp(
         title: 'Flutter App',
         theme: ThemeData(
           useMaterial3: true,

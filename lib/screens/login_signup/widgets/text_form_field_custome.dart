@@ -41,7 +41,6 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
   }
 
   void handleShowPassword() {
-    print("1");
     setState(() {
       _isShowPassword = !_isShowPassword;
     });

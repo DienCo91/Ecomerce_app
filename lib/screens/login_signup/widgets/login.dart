@@ -53,6 +53,7 @@ class _LoginState extends State<Login> {
   }
 
   void handleLogin() async {
+    Get.offAll(Home());
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoadingBtn = true;

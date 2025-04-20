@@ -5,7 +5,7 @@ class AppScaffold extends Scaffold {
   AppScaffold({
     super.key,
     required Widget body,
-    String title = 'Flutter App',
+    String title = 'E Commerce App',
     PreferredSizeWidget? appBar,
     Widget? drawer,
     Widget? bottomNavigationBar,

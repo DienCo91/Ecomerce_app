@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "392377802812",
+    "project_id": "ecommereapp-3d4ad",
+    "storage_bucket": "ecommereapp-3d4ad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392377802812:android:8f587c1c9ed7be844be339",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3l49yKynoiCD_W8vsA5FKTVwLdjkkIKo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

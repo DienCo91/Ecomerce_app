@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/constants.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
-import 'package:flutter_app/models/albums.dart';
 import 'package:flutter_app/models/login_request.dart';
 import 'package:flutter_app/screens/home/index.dart';
 import 'package:flutter_app/screens/login_signup/widgets/text_form_field_custome.dart';
-import 'package:flutter_app/services/album_service.dart';
 import 'package:flutter_app/services/auth_service.dart';
-import 'package:flutter_app/utils/api_constants.dart';
 import 'package:flutter_app/utils/assets_animation.dart';
 import 'package:flutter_app/utils/assets_image.dart';
-import 'package:flutter_app/common/constants.dart';
 import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
 import 'package:lottie/lottie.dart';
 
 class Login extends StatefulWidget {

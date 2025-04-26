@@ -1,4 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/products.dart';
+import 'package:flutter_app/screens/shop/widgets/carousel_slider.dart';
+import 'package:flutter_app/screens/shop/widgets/category.dart';
+import 'package:flutter_app/screens/shop/widgets/product.dart';
+import 'package:flutter_app/screens/shop/widgets/search.dart';
+import 'package:flutter_app/services/product_service.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class Shop extends StatefulWidget {
   const Shop({super.key, required String title}) : _title = title;
@@ -10,43 +19,124 @@ class Shop extends StatefulWidget {
 }
 
 class _ShopState extends State<Shop> {
+  List<Products> _products = [];
+  int _currentPage = 1;
+  bool _isLoading = true;
+  Map<String, dynamic> filterParams = {
+    "name": "all",
+    "category": "all",
+    "brand": "all",
+    "min": 1,
+    "max": 5000,
+    "rating": 0,
+    "order": 0,
+    "page": 1,
+    "limit": 10,
+    "sortOrder": jsonEncode({"_id": -1}),
+  };
+
+  void _fetchProducts() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 10));
+    try {
+      final response = await ProductService().fetchProducts(filterParams);
+      print(response);
+      setState(() {
+        _products = response.products;
+        _currentPage = response.currentPage;
+      });
+    } catch (e) {
+      print("Error fetching products: $e");
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(
-              widget._title,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            SizedBox(width: 32),
-            Expanded(
-              child: TextField(
-                style: TextStyle(fontSize: 14),
-                decoration: InputDecoration(
-                  isDense: true,
-                  contentPadding: const EdgeInsets.only(
-                    top: 0,
-                    bottom: 0,
-                    left: 20,
-                    right: 20,
-                  ),
-                  hintText: "Search",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(100),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.search, color: Colors.blue, size: 24),
-                  ),
-                  fillColor: const Color.fromARGB(48, 158, 158, 158),
-                  filled: true,
+    return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Search(widget: widget, title: widget._title),
+              Carousel(),
+              Category(),
+              Container(
+                margin: const EdgeInsets.only(top: 20, bottom: 8),
+                child: Column(
+                  children: [
+                    Text(
+                      "Products",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            ],
+          ),
+        ),
+
+        SliverPadding(
+          padding: EdgeInsets.only(bottom: 20),
+          sliver: SliverGrid(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              if (_isLoading) {
+                return Skeletonizer(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 200,
+                            color: Colors.grey,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("123213123123"),
+                                Text("12321112323"),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+              final Products p = _products[index];
+              return Product(key: ValueKey(p.id), product: p);
+            }, childCount: _isLoading ? 4 : _products.length),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 8, // khoảng cách dọc
+              crossAxisSpacing: 8, // khoảng cách ngang
+              childAspectRatio: 0.6, // tùy chỉnh tỷ lệ rộng/cao
             ),
-          ],
+          ),
         ),
       ],
     );

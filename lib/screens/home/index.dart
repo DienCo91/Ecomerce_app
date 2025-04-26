@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
   ];
 
   static const List<BottomNavigationBarItem> _bottomNavigationBarItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.shop), label: "Shop"),
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: "Shop"),
     BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Wishlist"),
     BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Card"),
     BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
         toolbarHeight: message != null ? 20 : 0,
         title: message != null ? Text(message?.notification?.title) : null,
       ),
-      body: Center(child: _widgetOption.elementAt(_selectIndex)),
+      body: IndexedStack(index: _selectIndex, children: _widgetOption),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,

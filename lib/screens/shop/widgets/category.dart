@@ -18,7 +18,6 @@ class _CategoryState extends State<Category> {
     setState(() {
       _isLoading = true;
     });
-    await Future.delayed(const Duration(seconds: 3));
     try {
       final response = await CategoryService().getCategories();
 
@@ -51,6 +50,7 @@ class _CategoryState extends State<Category> {
             "Categories",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
+
           Skeletonizer(
             enabled: _isLoading,
             child: Container(
@@ -90,6 +90,12 @@ class _CategoryState extends State<Category> {
               ),
             ),
           ),
+          !_isLoading && _category.isEmpty
+              ? Text(
+                "No categories available",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              )
+              : SizedBox(height: 0),
         ],
       ),
     );

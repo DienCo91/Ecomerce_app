@@ -7,9 +7,9 @@ class Brand {
 
   factory Brand.fromJson(Map<String, dynamic> json) {
     return Brand(
-      id: json['_id'] as String,
-      name: json['name'] as String,
-      isActive: json['isActive'] as bool,
+      id: json['_id'] as String? ?? "",
+      name: json['name'] as String? ?? "",
+      isActive: json['isActive'] as bool? ?? false,
     );
   }
 }

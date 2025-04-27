@@ -23,8 +23,8 @@ class ProductService {
     );
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return ProductResponse.fromJson(data);
+      final Map<String, dynamic> dataResponse = jsonDecode(response.body);
+      return ProductResponse.fromJson(dataResponse);
     } else {
       throw Exception("Error fetching products");
     }

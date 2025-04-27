@@ -41,23 +41,29 @@ class Products {
 
   factory Products.fromJson(Map<String, dynamic> json) {
     return Products(
-      id: json['_id'] as String,
-      taxable: json['taxable'] as bool,
-      isActive: json['isActive'] as bool,
-      brand: Brand.fromJson(json['brand']),
-      sku: json['sku'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String,
-      quantity: json['quantity'] as int,
-      price: json['price'] as num,
-      imageUrl: json['imageUrl'] as String,
-      imageKey: json['imageKey'] as String,
-      created: DateTime.parse(json['created'] as String),
-      slug: json['slug'] as String,
-      v: json['__v'] as int,
-      totalRatings: json['totalRatings'] as int,
-      totalReviews: json['totalReviews'] as int,
-      averageRating: json['averageRating'] as num,
+      id: json['_id'] as String? ?? '',
+      taxable: json['taxable'] as bool? ?? false,
+      isActive: json['isActive'] as bool? ?? false,
+      brand:
+          json['brand'] != null
+              ? Brand.fromJson(json['brand'])
+              : Brand(id: '', name: '', isActive: false),
+
+      sku: json['sku'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      quantity: json['quantity'] as int? ?? 0,
+      price: json['price'] as num? ?? 0,
+      imageUrl: json['imageUrl'] as String? ?? '',
+      imageKey: json['imageKey'] as String? ?? '',
+      created: DateTime.parse(
+        json['created'] as String? ?? DateTime.now().toString(),
+      ),
+      slug: json['slug'] as String? ?? '',
+      v: json['__v'] as int? ?? 0,
+      totalRatings: json['totalRatings'] as int? ?? 0,
+      totalReviews: json['totalReviews'] as int? ?? 0,
+      averageRating: json['averageRating'] as num? ?? 0,
     );
   }
 }

@@ -21,7 +21,9 @@ class Shop extends StatefulWidget {
 class _ShopState extends State<Shop> {
   List<Products> _products = [];
   int _currentPage = 1;
+  bool _isLoadMore = true;
   bool _isLoading = true;
+  ScrollController _scrollController = ScrollController();
   Map<String, dynamic> filterParams = {
     "name": "all",
     "category": "all",
@@ -39,14 +41,15 @@ class _ShopState extends State<Shop> {
     setState(() {
       _isLoading = true;
     });
-
-    await Future.delayed(const Duration(seconds: 10));
     try {
       final response = await ProductService().fetchProducts(filterParams);
-      print(response);
       setState(() {
-        _products = response.products;
+        _products =
+            filterParams["page"] != 1
+                ? [..._products, ...response.products]
+                : response.products;
         _currentPage = response.currentPage;
+        _isLoadMore = response.products.length < 10 ? false : true;
       });
     } catch (e) {
       print("Error fetching products: $e");
@@ -60,19 +63,31 @@ class _ShopState extends State<Shop> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_scrollListener);
     _fetchProducts();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 100 &&
+        _isLoading == false &&
+        _isLoadMore == true) {
+      filterParams["page"] = _currentPage + 1;
+      _fetchProducts();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
+      controller: _scrollController,
       slivers: [
         SliverToBoxAdapter(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Search(widget: widget, title: widget._title),
+              Search(title: widget._title),
               Carousel(),
               Category(),
               Container(
@@ -96,40 +111,43 @@ class _ShopState extends State<Shop> {
         SliverPadding(
           padding: EdgeInsets.only(bottom: 20),
           sliver: SliverGrid(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              if (_isLoading) {
-                return Skeletonizer(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 200,
-                            color: Colors.grey,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("123213123123"),
-                                Text("12321112323"),
-                              ],
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                if (_isLoading && index >= _products.length) {
+                  return Skeletonizer(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: 200,
+                              color: Colors.grey,
                             ),
-                          ),
-                        ],
+                            Container(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("123213123123"),
+                                  Text("12321112323"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }
-              final Products p = _products[index];
-              return Product(key: ValueKey(p.id), product: p);
-            }, childCount: _isLoading ? 4 : _products.length),
+                  );
+                }
+                final Products p = _products[index];
+                return Product(key: ValueKey(p.id), product: p);
+              },
+              childCount: _isLoading ? _products.length + 4 : _products.length,
+            ),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 8, // khoảng cách dọc

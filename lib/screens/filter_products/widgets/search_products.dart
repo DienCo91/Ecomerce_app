@@ -2,20 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/products.dart';
-import 'package:flutter_app/screens/filter_products/index.dart';
+import 'package:flutter_app/screens/filter_products/widgets/filter.dart';
 import 'package:flutter_app/services/suggest_search_service.dart';
-import 'package:get/get.dart';
 
-class Search extends StatefulWidget {
-  const Search({super.key, required String title}) : _title = title;
-
-  final String _title;
+class SearchProducts extends StatefulWidget {
+  const SearchProducts({super.key});
 
   @override
-  State<Search> createState() => _SearchState();
+  State<SearchProducts> createState() => _SearchProductsState();
 }
 
-class _SearchState extends State<Search> {
+class _SearchProductsState extends State<SearchProducts> {
   OverlayEntry? _overlayEntry;
   List<Products> _suggestions = [];
   Timer? _debounce;
@@ -125,8 +122,6 @@ class _SearchState extends State<Search> {
   void handleSearch() {
     if (_searchController.text.isNotEmpty) {
       _disableOverlay();
-      Get.to(FilterProducts(), arguments: _searchController.text);
-      _searchController.clear();
     }
   }
 
@@ -141,41 +136,49 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget._title,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-        ),
-        SizedBox(width: 32),
-        Expanded(
-          child: TextField(
-            controller: _searchController,
-            style: TextStyle(fontSize: 14),
-            onChanged: _onChanged,
-            onSubmitted: (_) => handleSearch(),
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.only(
-                top: 0,
-                bottom: 0,
-                left: 20,
-                right: 20,
-              ),
-              hintText: "Search ...",
-              hintStyle: TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(100),
-                borderSide: BorderSide.none,
-              ),
-              suffixIcon: IconButton(
-                onPressed: handleSearch,
-                icon: Icon(Icons.search, color: Colors.blue, size: 24),
-              ),
-              fillColor: const Color.fromARGB(48, 158, 158, 158),
-              filled: true,
-            ),
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 16),
+          child: Text(
+            "Filter Products",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
+        ),
+        Row(
+          children: [
+            Filter(),
+            Expanded(
+              child: TextField(
+                controller: _searchController,
+                style: TextStyle(fontSize: 14),
+                onChanged: _onChanged,
+                onSubmitted: (value) => handleSearch(),
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.only(
+                    top: 0,
+                    bottom: 0,
+                    left: 20,
+                    right: 20,
+                  ),
+                  hintText: "Search ...",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(100),
+                    borderSide: BorderSide.none,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: handleSearch,
+                    icon: Icon(Icons.search, color: Colors.blue, size: 24),
+                  ),
+                  fillColor: const Color.fromARGB(48, 158, 158, 158),
+                  filled: true,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

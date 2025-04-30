@@ -6,7 +6,11 @@ import 'package:flutter_app/screens/filter_products/widgets/filter.dart';
 import 'package:flutter_app/services/suggest_search_service.dart';
 
 class SearchProducts extends StatefulWidget {
-  const SearchProducts({super.key});
+  const SearchProducts({super.key, this.txtSearch, required this.handleSearchFilter});
+
+  final String? txtSearch;
+  final Function(String search, Map<String, num> selectedValue, RangeValues currentRangeValues, double rating)
+  handleSearchFilter;
 
   @override
   State<SearchProducts> createState() => _SearchProductsState();
@@ -17,6 +21,10 @@ class _SearchProductsState extends State<SearchProducts> {
   List<Products> _suggestions = [];
   Timer? _debounce;
   TextEditingController _searchController = TextEditingController();
+
+  Map<String, num> typeSelectedValue = {};
+  RangeValues _currentRangeValues = const RangeValues(1, 2500);
+  double rating = 0;
 
   void _handleSuggestion(String name) async {
     if (_debounce?.isActive ?? false) {
@@ -68,7 +76,7 @@ class _SearchProductsState extends State<SearchProducts> {
                 ),
               ),
               Positioned(
-                top: 86,
+                top: 140,
                 left: 100,
                 right: 20,
                 child: Material(
@@ -89,16 +97,11 @@ class _SearchProductsState extends State<SearchProducts> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 8,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                     child: Text(e.name),
                                   ),
                                   onTap: () {
-                                    _searchController.value = TextEditingValue(
-                                      text: e.name,
-                                    );
+                                    _searchController.value = TextEditingValue(text: e.name);
                                     _overlayEntry?.remove();
                                     _overlayEntry = null;
                                   },
@@ -120,9 +123,23 @@ class _SearchProductsState extends State<SearchProducts> {
   }
 
   void handleSearch() {
-    if (_searchController.text.isNotEmpty) {
-      _disableOverlay();
-    }
+    _disableOverlay();
+
+    widget.handleSearchFilter(_searchController.text, typeSelectedValue, _currentRangeValues, rating);
+  }
+
+  void onFilter(Map<String, num> typeSelectedValue, RangeValues currentRangeValues, double rating) {
+    setState(() {
+      this.typeSelectedValue = typeSelectedValue;
+      _currentRangeValues = currentRangeValues;
+      this.rating = rating;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.text = widget.txtSearch ?? "";
   }
 
   @override
@@ -141,14 +158,11 @@ class _SearchProductsState extends State<SearchProducts> {
       children: [
         Container(
           margin: const EdgeInsets.symmetric(vertical: 16),
-          child: Text(
-            "Filter Products",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
+          child: Text("Filter Products", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         ),
         Row(
           children: [
-            Filter(),
+            Filter(onFilter: onFilter),
             Expanded(
               child: TextField(
                 controller: _searchController,
@@ -157,18 +171,10 @@ class _SearchProductsState extends State<SearchProducts> {
                 onSubmitted: (value) => handleSearch(),
                 decoration: InputDecoration(
                   isDense: true,
-                  contentPadding: const EdgeInsets.only(
-                    top: 0,
-                    bottom: 0,
-                    left: 20,
-                    right: 20,
-                  ),
+                  contentPadding: const EdgeInsets.only(top: 0, bottom: 0, left: 20, right: 20),
                   hintText: "Search ...",
                   hintStyle: TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(100),
-                    borderSide: BorderSide.none,
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(100), borderSide: BorderSide.none),
                   suffixIcon: IconButton(
                     onPressed: handleSearch,
                     icon: Icon(Icons.search, color: Colors.blue, size: 24),

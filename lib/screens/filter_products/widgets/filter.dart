@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/filter_products/widgets/price.dart';
+import 'package:flutter_app/screens/filter_products/widgets/rating.dart';
 import 'package:flutter_app/screens/filter_products/widgets/sort_by.dart';
 import 'package:get/get.dart';
 
 const listDropDown = [
-  {"label": "Newest First", "value": "id", "number": " -1"},
-  {"label": "Price High to Low", "value": "price", "number": '-1'},
-  {"label": "Price Low to High", "value": "price", "number": '1'},
+  {"label": "Newest First", "value": "_id", "number": -1},
+  {"label": "Price High to Low", "value": "price", "number": -1},
+  {"label": "Price Low to High", "value": "price", "number": 1},
 ];
 
 class Filter extends StatefulWidget {
-  const Filter({super.key});
+  const Filter({super.key, required this.onFilter});
+
+  final void Function(Map<String, num> selectedValue, RangeValues currentRangeValues, double rating) onFilter;
 
   @override
   State<Filter> createState() => _FilterState();
@@ -18,10 +21,11 @@ class Filter extends StatefulWidget {
 
 class _FilterState extends State<Filter> {
   String? selectedValue = listDropDown[0]['label'] as String;
-  RangeValues _currentRangeValues = const RangeValues(10, 2500);
+  RangeValues _currentRangeValues = const RangeValues(1, 2500);
+  double rating = 0;
 
-  void onPressed() {
-    Get.bottomSheet(
+  void onPressed() async {
+    await Get.bottomSheet(
       StatefulBuilder(
         builder: (BuildContext context, StateSetter setSheetState) {
           return Container(
@@ -32,6 +36,7 @@ class _FilterState extends State<Filter> {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Filter", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -46,6 +51,17 @@ class _FilterState extends State<Filter> {
                     });
                   },
                   selectedValue: selectedValue,
+                ),
+                Rating(
+                  initialRating: rating,
+                  onRatingUpdate: (rating) {
+                    setState(() {
+                      this.rating = rating;
+                    });
+                    setSheetState(() {
+                      this.rating = rating;
+                    });
+                  },
                 ),
                 Price(
                   onChanged: (RangeValues values) {
@@ -64,6 +80,11 @@ class _FilterState extends State<Filter> {
         },
       ),
     );
+    final selectedType = listDropDown.firstWhere((item) => item['label'] == selectedValue);
+    if (selectedType.isEmpty) return;
+    final sortField = selectedType['value'].toString(); // "_id"
+    final sortDirection = selectedType['number'] as num;
+    widget.onFilter({sortField: sortDirection}, _currentRangeValues, rating);
   }
 
   @override

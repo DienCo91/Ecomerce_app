@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/products.dart';
 import 'package:flutter_app/screens/shop/widgets/carousel_slider.dart';
 import 'package:flutter_app/screens/shop/widgets/category.dart';
-import 'package:flutter_app/screens/shop/widgets/product.dart';
+import 'package:flutter_app/widgets/product.dart';
 import 'package:flutter_app/screens/shop/widgets/search.dart';
 import 'package:flutter_app/services/product_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -44,10 +43,7 @@ class _ShopState extends State<Shop> {
     try {
       final response = await ProductService().fetchProducts(filterParams);
       setState(() {
-        _products =
-            filterParams["page"] != 1
-                ? [..._products, ...response.products]
-                : response.products;
+        _products = filterParams["page"] != 1 ? [..._products, ...response.products] : response.products;
         _currentPage = response.currentPage;
         _isLoadMore = response.products.length < 10 ? false : true;
       });
@@ -68,8 +64,7 @@ class _ShopState extends State<Shop> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 100 &&
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100 &&
         _isLoading == false &&
         _isLoadMore == true) {
       filterParams["page"] = _currentPage + 1;
@@ -93,15 +88,7 @@ class _ShopState extends State<Shop> {
               Container(
                 margin: const EdgeInsets.only(top: 20, bottom: 8),
                 child: Column(
-                  children: [
-                    Text(
-                      "Products",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                  children: [Text("Products", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))],
                 ),
               ),
             ],
@@ -111,43 +98,33 @@ class _ShopState extends State<Shop> {
         SliverPadding(
           padding: EdgeInsets.only(bottom: 20),
           sliver: SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                if (_isLoading && index >= _products.length) {
-                  return Skeletonizer(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        color: Colors.white,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              height: 200,
-                              color: Colors.grey,
+            delegate: SliverChildBuilderDelegate((context, index) {
+              if (_isLoading && index >= _products.length) {
+                return Skeletonizer(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(width: double.infinity, height: 200, color: Colors.grey),
+                          Container(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [Text("123213123123"), Text("12321112323")],
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("123213123123"),
-                                  Text("12321112323"),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                }
-                final Products p = _products[index];
-                return Product(key: ValueKey(p.id), product: p);
-              },
-              childCount: _isLoading ? _products.length + 4 : _products.length,
-            ),
+                  ),
+                );
+              }
+              final Products p = _products[index];
+              return Product(key: ValueKey(p.id), product: p);
+            }, childCount: _isLoading ? _products.length + 4 : _products.length),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 8, // khoảng cách dọc

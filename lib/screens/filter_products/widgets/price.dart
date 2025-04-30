@@ -12,7 +12,7 @@ class Price extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Text("Price :", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           RangeSlider(
             values: currentRangeValues,
             max: 5000,

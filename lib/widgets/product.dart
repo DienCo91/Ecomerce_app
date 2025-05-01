@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/products.dart';
+import 'package:flutter_app/screens/detail_products/index.dart';
 import 'package:flutter_app/utils/api_constants.dart';
 import 'package:flutter_app/utils/assets_image.dart';
+import 'package:get/get.dart';
 
 class Product extends StatelessWidget {
   const Product({super.key, required this.product});
@@ -10,6 +12,11 @@ class Product extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void onTap() async {
+      await Future.delayed(Duration(milliseconds: 200));
+      Get.to(() => DetailProduct(), arguments: product);
+    }
+
     return Material(
       elevation: 1,
       shadowColor: const Color.fromARGB(103, 0, 0, 0),
@@ -17,9 +24,7 @@ class Product extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: () {
-          print(123);
-        },
+        onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,9 +32,7 @@ class Product extends StatelessWidget {
               flex: 6,
               child: FadeInImage(
                 placeholder: AssetsImages.defaultImage,
-                image: NetworkImage(
-                  '${ApiConstants.baseUrl}${product.imageUrl}',
-                ),
+                image: NetworkImage('${ApiConstants.baseUrl}${product.imageUrl}'),
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: double.infinity,
@@ -53,10 +56,7 @@ class Product extends StatelessWidget {
                   children: [
                     Text(
                       product.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -72,13 +72,7 @@ class Product extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Text(
-                      '\$${product.price}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text('\$${product.price}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),

@@ -14,7 +14,6 @@ class LoginAndSignUp extends StatelessWidget {
         // extendBodyBehindAppBar: true,
         appBar: AppBar(
           toolbarHeight: 20,
-          backgroundColor: Colors.white,
           bottom: TabBar(
             labelColor: Colors.blue,
             unselectedLabelColor: Colors.grey,

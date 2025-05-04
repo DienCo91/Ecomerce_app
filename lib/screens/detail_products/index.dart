@@ -113,7 +113,7 @@ class _DetailProductState extends State<DetailProduct> {
                       FadeInImage(
                         placeholder: AssetsImages.defaultImage,
                         image: NetworkImage('${ApiConstants.baseUrl}${productDetail.imageUrl}'),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                         width: double.infinity,
                         height: double.infinity,
                         imageErrorBuilder: (context, error, stackTrace) {

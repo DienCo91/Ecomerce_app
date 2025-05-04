@@ -3,7 +3,7 @@ import 'package:flutter_app/common/constants.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/models/login_request.dart';
 import 'package:flutter_app/screens/home/index.dart';
-import 'package:flutter_app/screens/login_signup/widgets/text_form_field_custome.dart';
+import 'package:flutter_app/widgets/text_form_field_custome.dart';
 import 'package:flutter_app/services/auth_service.dart';
 import 'package:flutter_app/utils/assets_animation.dart';
 import 'package:flutter_app/utils/assets_image.dart';

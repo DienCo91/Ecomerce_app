@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/screens/Wishlist/index.dart';
 import 'package:flutter_app/screens/card_by_user/index.dart';
+import 'package:flutter_app/screens/dashboard/index.dart';
 import 'package:flutter_app/screens/shop/index.dart';
 import 'package:flutter_app/widgets/app_scaffold.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,7 @@ class _HomeState extends State<Home> {
   final AuthController user = Get.find();
   int _selectIndex = 0;
 
-  static const List<Widget> _widgetOption = <Widget>[Shop(title: "Shop"), Wishlist(), CardByUser(), Text("Dashboard")];
+  static const List<Widget> _widgetOption = <Widget>[Shop(title: "Shop"), Wishlist(), CardByUser(), Dashboard()];
 
   static const List<BottomNavigationBarItem> _bottomNavigationBarItems = [
     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Shop"),

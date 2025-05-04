@@ -4,6 +4,7 @@ class Auth {
   final String lastName;
   final String id;
   final String role;
+  final String? phoneNumber;
 
   const Auth({
     required this.email,
@@ -11,25 +12,31 @@ class Auth {
     required this.lastName,
     required this.id,
     required this.role,
+    this.phoneNumber,
   });
 
   factory Auth.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'email': String email,
-        'lastName': String lastName,
-        'firstName': String firstName,
-        'id': String id,
-        'role': String role,
-      } =>
-        Auth(
-          email: email,
-          lastName: lastName,
-          firstName: firstName,
-          id: id,
-          role: role,
-        ),
-      _ => throw const FormatException("Failed load album"),
+    try {
+      return Auth(
+        email: json['email'] as String,
+        firstName: json['firstName'] as String,
+        lastName: json['lastName'] as String,
+        id: json['_id'] ?? json['id'] as String, // Kiểm tra _id hoặc id
+        role: json['role'] as String,
+        phoneNumber: json['phoneNumber'] as String?,
+      );
+    } catch (_) {
+      throw const FormatException("Failed load Auth");
+    }
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      '_id': id,
+      'role': role,
+      'phoneNumber': phoneNumber,
     };
   }
 }

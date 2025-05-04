@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/controllers/auth_controller.dart';
+import 'package:flutter_app/controllers/cart_all_user_controller.dart';
 import 'package:flutter_app/models/products.dart';
-import 'package:flutter_app/screens/detail_products/widgets/comment.dart';
 import 'package:flutter_app/screens/detail_products/widgets/divider.dart';
+import 'package:flutter_app/screens/detail_products/widgets/icon_cart_number.dart';
 import 'package:flutter_app/screens/detail_products/widgets/review.dart';
 import 'package:flutter_app/utils/api_constants.dart';
 import 'package:flutter_app/utils/assets_image.dart';
@@ -39,10 +41,53 @@ class _DetailProductState extends State<DetailProduct> {
   @override
   void initState() {
     super.initState();
+    Get.lazyPut(() => CartAllUserController());
   }
 
   @override
   Widget build(BuildContext context) {
+    final CartAllUserController cardAllUser = Get.find();
+    final AuthController user = Get.find();
+
+    void handleAddToCard() async {
+      await Future.delayed(Duration(seconds: 1));
+      final currentUser = user.user.value?.user;
+      if (currentUser != null) {
+        final updateProduct = productDetail.copyWith(quantity: quantity, price: quantity * productDetail.price);
+        cardAllUser.addToCart(currentUser.id, updateProduct);
+        Get.snackbar(
+          "Add Success !",
+          "Add product to cart",
+          backgroundColor: Colors.greenAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.only(top: 4, left: 20, right: 20),
+          duration: const Duration(seconds: 3),
+          forwardAnimationCurve: Curves.easeIn,
+          reverseAnimationCurve: Curves.easeIn,
+        );
+      }
+    }
+
+    void handleRemoveToCard() async {
+      await Future.delayed(Duration(seconds: 1));
+      final currentUser = user.user.value?.user;
+      if (currentUser != null) {
+        cardAllUser.removeFromCart(currentUser.id, productDetail.id);
+        Get.snackbar(
+          "Remove Success !",
+          "Remove product to cart",
+          backgroundColor: Colors.red[400],
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.only(top: 4, left: 20, right: 20),
+          duration: const Duration(seconds: 3),
+          forwardAnimationCurve: Curves.easeIn,
+          reverseAnimationCurve: Curves.easeIn,
+        );
+      }
+    }
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -95,6 +140,7 @@ class _DetailProductState extends State<DetailProduct> {
                           child: Text("In Stock", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
                         ),
                       ),
+                      Obx(() => IconCardNumber(number: cardAllUser.getCartByUser(user.user.value!.user.id).length)),
                     ],
                   ),
                 ),
@@ -128,10 +174,12 @@ class _DetailProductState extends State<DetailProduct> {
                       ),
                       Row(
                         children: [
-                          Text("Brand:", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                          Container(
+                            margin: const EdgeInsets.only(right: 16),
+                            child: Text("Brand:", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                          ),
                           TextButton(
                             onPressed: () {},
-                            style: ButtonStyle(padding: WidgetStateProperty.all(EdgeInsets.only(top: 0, bottom: 0))),
                             child: Text(productDetail.brand.name, style: TextStyle(color: Colors.blue)),
                           ),
                         ],
@@ -152,19 +200,31 @@ class _DetailProductState extends State<DetailProduct> {
                         ],
                       ),
 
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(top: 8),
-                        child: ElevatedButton.icon(
-                          icon: Icon(Icons.shopping_cart, size: 24, color: Colors.white),
-                          onPressed: () {},
-                          label: Text(
-                            "Add To Card",
-                            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                      Obx(() {
+                        final userId = user.user.value?.user.id ?? '';
+                        bool hasProductInCart = cardAllUser.hasProductInCart(userId, productDetail.id);
+                        return Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(top: 8),
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.shopping_cart, size: 24, color: Colors.white),
+                            onPressed: () {
+                              if (hasProductInCart) {
+                                handleRemoveToCard();
+                              } else {
+                                handleAddToCard();
+                              }
+                            },
+                            label: Text(
+                              hasProductInCart ? "Remove To Cart" : "Add To Cart",
+                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll(hasProductInCart ? Colors.red[400] : Colors.blue),
+                            ),
                           ),
-                          style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.blue)),
-                        ),
-                      ),
+                        );
+                      }),
                     ],
                   ),
                 ),

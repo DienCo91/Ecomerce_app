@@ -56,6 +56,15 @@ class _ShopState extends State<Shop> {
     }
   }
 
+  void _handleToggleFavorite(bool isLiked, String productId) {
+    setState(() {
+      final index = _products.indexWhere((p) => p.id == productId);
+      if (index != -1) {
+        _products[index].isLiked = isLiked;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -123,7 +132,12 @@ class _ShopState extends State<Shop> {
                 );
               }
               final Products p = _products[index];
-              return Product(key: ValueKey(p.id), product: p);
+              return Product(
+                key: ValueKey(p.id),
+                product: p,
+                isShowHeart: true,
+                onToggleFavorite: _handleToggleFavorite,
+              );
             }, childCount: _isLoading ? _products.length + 4 : _products.length),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,

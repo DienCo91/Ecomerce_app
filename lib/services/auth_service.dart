@@ -12,19 +12,12 @@ class AuthService {
   Future<LoginResponse> loginUser(LoginRequest loginData) async {
     final response = await http.post(
       Uri.parse('${ApiConstants.baseUrl}/api/auth/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'email': loginData.email,
-        'password': loginData.password,
-      }),
+      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
+      body: jsonEncode(<String, String>{'email': loginData.email, 'password': loginData.password}),
     );
 
     if (response.statusCode == 200) {
-      return LoginResponse.fromJson(
-        jsonDecode(response.body) as Map<String, dynamic>,
-      );
+      return LoginResponse.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
     } else {
       final String error = jsonDecode(response.body)["error"];
       Get.snackbar(
@@ -41,15 +34,15 @@ class AuthService {
   Future<LoginResponse> registerUser(RegisterRequest registerData) async {
     final response = await http.post(
       Uri.parse('${ApiConstants.baseUrl}/api/auth/register'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode(registerData.toJson()),
     );
     if (response.statusCode == 200) {
       Get.snackbar(
         "Sign up success",
         "Account created!",
+        backgroundColor: Colors.greenAccent,
+        colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
       );
       return LoginResponse.fromJson(jsonDecode(response.body));

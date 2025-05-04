@@ -26,6 +26,7 @@ dependencies:
   skeletonizer: ^1.4.3
   flutter_rating_bar: ^4.0.1
   intl: ^0.20.2
+  get_storage: ^2.1.1
 
 dev_dependencies:
   flutter_test:

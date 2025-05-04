@@ -83,6 +83,15 @@ class _FilterProductsState extends State<FilterProducts> {
     _scrollController.animateTo(0.0, duration: Duration(seconds: 1), curve: Curves.easeInOut);
   }
 
+  void _handleToggleFavorite(bool isLiked, String productId) {
+    setState(() {
+      final index = _products.indexWhere((p) => p.id == productId);
+      if (index != -1) {
+        _products[index].isLiked = isLiked;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -114,6 +123,7 @@ class _FilterProductsState extends State<FilterProducts> {
               isLoading: _isLoading,
               handleLoadMore: _handleLoadMore,
               scrollController: _scrollController,
+              onToggleFavorite: _handleToggleFavorite,
             ),
           ],
         ),

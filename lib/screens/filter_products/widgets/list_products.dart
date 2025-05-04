@@ -10,12 +10,14 @@ class ListProducts extends StatefulWidget {
     required this.isLoading,
     required this.handleLoadMore,
     required this.scrollController,
+    this.onToggleFavorite,
   });
 
   final ScrollController scrollController;
   final List products;
   final bool isLoading;
   final Function handleLoadMore;
+  final Function(bool isLiked, String id)? onToggleFavorite;
 
   @override
   State<ListProducts> createState() => _ListProductsState();
@@ -77,7 +79,7 @@ class _ListProductsState extends State<ListProducts> {
             );
           }
           final Products p = widget.products[index];
-          return Product(key: ValueKey(p.id), product: p);
+          return Product(key: ValueKey(p.id), product: p, isShowHeart: true, onToggleFavorite: widget.onToggleFavorite);
         },
       ),
     );

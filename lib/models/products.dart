@@ -18,6 +18,7 @@ class Products {
   final int totalRatings;
   final int totalReviews;
   final num averageRating;
+  bool? isLiked;
 
   Products({
     required this.id,
@@ -37,6 +38,7 @@ class Products {
     required this.totalRatings,
     required this.totalReviews,
     required this.averageRating,
+    this.isLiked = false,
   });
 
   factory Products.fromJson(Map<String, dynamic> json) {
@@ -44,11 +46,7 @@ class Products {
       id: json['_id'] as String? ?? '',
       taxable: json['taxable'] as bool? ?? false,
       isActive: json['isActive'] as bool? ?? false,
-      brand:
-          json['brand'] != null
-              ? Brand.fromJson(json['brand'])
-              : Brand(id: '', name: '', isActive: false),
-
+      brand: json['brand'] != null ? Brand.fromJson(json['brand']) : Brand(id: '', name: '', isActive: false),
       sku: json['sku'] as String? ?? '',
       name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',
@@ -56,14 +54,42 @@ class Products {
       price: json['price'] as num? ?? 0,
       imageUrl: json['imageUrl'] as String? ?? '',
       imageKey: json['imageKey'] as String? ?? '',
-      created: DateTime.parse(
-        json['created'] as String? ?? DateTime.now().toString(),
-      ),
+      created: DateTime.parse(json['created'] as String? ?? DateTime.now().toString()),
       slug: json['slug'] as String? ?? '',
       v: json['__v'] as int? ?? 0,
       totalRatings: json['totalRatings'] as int? ?? 0,
       totalReviews: json['totalReviews'] as int? ?? 0,
       averageRating: json['averageRating'] as num? ?? 0,
+      isLiked: json['isLiked'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'product': id, 'quantity': quantity, 'price': price, 'taxable': taxable};
+  }
+}
+
+extension ProductCopy on Products {
+  Products copyWith({int? quantity, num? price}) {
+    return Products(
+      id: id,
+      taxable: taxable,
+      isActive: isActive,
+      brand: brand,
+      sku: sku,
+      name: name,
+      description: description,
+      quantity: quantity ?? this.quantity,
+      price: price ?? this.price,
+      imageUrl: imageUrl,
+      imageKey: imageKey,
+      created: created,
+      slug: slug,
+      v: v,
+      totalRatings: totalRatings,
+      totalReviews: totalReviews,
+      averageRating: averageRating,
+      isLiked: isLiked,
     );
   }
 }

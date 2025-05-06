@@ -3,7 +3,7 @@ import 'package:flutter_app/common/constants.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/models/login_request.dart';
 import 'package:flutter_app/screens/home/index.dart';
-import 'package:flutter_app/screens/login_signup/widgets/text_form_field_custome.dart';
+import 'package:flutter_app/widgets/text_form_field_custome.dart';
 import 'package:flutter_app/services/auth_service.dart';
 import 'package:flutter_app/utils/assets_animation.dart';
 import 'package:flutter_app/utils/assets_image.dart';
@@ -49,17 +49,13 @@ class _LoginState extends State<Login> {
   }
 
   void handleLogin() async {
-    Get.offAll(Home());
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoadingBtn = true;
       });
       try {
         final data = await AuthService().loginUser(
-          LoginRequest(
-            email: _controllerInputEmail.text,
-            password: _controllerInputPassword.text,
-          ),
+          LoginRequest(email: _controllerInputEmail.text, password: _controllerInputPassword.text),
         );
         print(data);
         auth.setUser(data);
@@ -78,9 +74,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 100,
-        ),
+        constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height - 100),
         child: Stack(
           children: [
             Positioned(
@@ -93,11 +87,7 @@ class _LoginState extends State<Login> {
               bottom: 0,
               left: 0,
               right: 0,
-              child: Image(
-                image: AssetsImages.imageBar,
-                fit: BoxFit.cover,
-                height: 600,
-              ),
+              child: Image(image: AssetsImages.imageBar, fit: BoxFit.cover, height: 600),
             ),
             Column(
               children: [
@@ -117,8 +107,7 @@ class _LoginState extends State<Login> {
                       children: [
                         TextFormFieldCustom(
                           controllerInput: _controllerInputEmail,
-                          onFieldSubmitted:
-                              (value) => _focusNodePassword.requestFocus(),
+                          onFieldSubmitted: (value) => _focusNodePassword.requestFocus(),
                           type: FieldType.email,
                           label: "Email",
                           prefixIcon: Icon(Icons.email),
@@ -137,31 +126,15 @@ class _LoginState extends State<Login> {
                           child: ElevatedButton.icon(
                             onPressed: handleLogin,
                             label: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 10,
-                                bottom: 10,
-                              ),
-                              child: Text(
-                                "Login",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
+                              padding: const EdgeInsets.only(top: 10, bottom: 10),
+                              child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 16)),
                             ),
                             style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll<Color>(
-                                _isLoadingBtn ? Colors.grey : Colors.blue,
-                              ),
+                              backgroundColor: WidgetStatePropertyAll<Color>(_isLoadingBtn ? Colors.grey : Colors.blue),
                               shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8),
-                                  ),
-                                ),
+                                RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
                               ),
                             ),
-                            //TODO: Loading when login
                             icon:
                                 _isLoadingBtn
                                     ? SizedBox(
@@ -169,9 +142,7 @@ class _LoginState extends State<Login> {
                                       height: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation(
-                                          Colors.white,
-                                        ),
+                                        valueColor: AlwaysStoppedAnimation(Colors.white),
                                       ),
                                     )
                                     : null,
@@ -183,23 +154,9 @@ class _LoginState extends State<Login> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             spacing: 24,
                             children: [
-                              Container(
-                                width: 120,
-                                height: 2,
-                                color: const Color.fromARGB(80, 158, 158, 158),
-                              ),
-                              Text(
-                                "OR",
-                                style: TextStyle(
-                                  color: Color.fromARGB(168, 0, 0, 0),
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Container(
-                                width: 120,
-                                height: 2,
-                                color: const Color.fromARGB(80, 158, 158, 158),
-                              ),
+                              Container(width: 120, height: 2, color: const Color.fromARGB(80, 158, 158, 158)),
+                              Text("OR", style: TextStyle(color: Color.fromARGB(168, 0, 0, 0), fontSize: 14)),
+                              Container(width: 120, height: 2, color: const Color.fromARGB(80, 158, 158, 158)),
                             ],
                           ),
                         ),
@@ -209,21 +166,12 @@ class _LoginState extends State<Login> {
                           child: OutlinedButton(
                             onPressed: () {},
                             style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll<Color>(
-                                Colors.white,
-                              ),
+                              backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
                               shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8),
-                                  ),
-                                ),
+                                RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
                               ),
                               side: WidgetStatePropertyAll<BorderSide>(
-                                BorderSide(
-                                  color: Color.fromARGB(86, 63, 63, 63),
-                                  width: 1,
-                                ),
+                                BorderSide(color: Color.fromARGB(86, 63, 63, 63), width: 1),
                               ),
                             ),
 
@@ -231,23 +179,12 @@ class _LoginState extends State<Login> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               spacing: 10,
                               children: [
-                                Image(
-                                  image: AssetsImages.iconGoogle,
-                                  width: 20,
-                                  height: 20,
-                                ),
+                                Image(image: AssetsImages.iconGoogle, width: 20, height: 20),
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 10,
-                                    bottom: 10,
-                                  ),
+                                  padding: const EdgeInsets.only(top: 10, bottom: 10),
                                   child: Text(
                                     "Login with Google",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.normal,
-                                    ),
+                                    style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal),
                                   ),
                                 ),
                               ],
@@ -269,10 +206,7 @@ class _LoginState extends State<Login> {
                             Text("Don't have an account ?"),
                             TextButton(
                               onPressed: handleGoSignUp,
-                              child: Text(
-                                "Sign Up",
-                                style: TextStyle(color: Colors.blue),
-                              ),
+                              child: Text("Sign Up", style: TextStyle(color: Colors.blue)),
                             ),
                           ],
                         ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
+import 'package:flutter_app/screens/Wishlist/index.dart';
+import 'package:flutter_app/screens/card_by_user/index.dart';
+import 'package:flutter_app/screens/dashboard/index.dart';
 import 'package:flutter_app/screens/shop/index.dart';
 import 'package:flutter_app/widgets/app_scaffold.dart';
 import 'package:get/get.dart';
@@ -15,14 +18,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final AuthController user = Get.find();
   int _selectIndex = 0;
-  dynamic message;
 
-  static const List<Widget> _widgetOption = <Widget>[
-    Shop(title: "Shop"),
-    Text("Wishlist"),
-    Text("Card"),
-    Text("Dashboard"),
-  ];
+  static const List<Widget> _widgetOption = <Widget>[Shop(title: "Shop"), Wishlist(), CardByUser(), Dashboard()];
 
   static const List<BottomNavigationBarItem> _bottomNavigationBarItems = [
     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Shop"),
@@ -34,7 +31,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    message = Get.arguments;
+    final args = Get.arguments;
+    if (args != null && args is Map && args['tabIndex'] != null) {
+      _selectIndex = args['tabIndex'];
+    }
   }
 
   void _onTabItem(int index) {
@@ -46,21 +46,12 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      appBar: AppBar(
-        toolbarHeight: message != null ? 20 : 0,
-        title: message != null ? Text(message?.notification?.title) : null,
-      ),
-      body: IndexedStack(index: _selectIndex, children: _widgetOption),
+      appBar: AppBar(toolbarHeight: 00, title: null),
+      body: Center(child: _widgetOption.elementAt(_selectIndex)),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: const Color.fromARGB(35, 0, 0, 0),
-              blurRadius: 5,
-              spreadRadius: 0,
-            ),
-          ],
+          boxShadow: [BoxShadow(color: const Color.fromARGB(35, 0, 0, 0), blurRadius: 5, spreadRadius: 0)],
         ),
         child: BottomNavigationBar(
           items: _bottomNavigationBarItems,

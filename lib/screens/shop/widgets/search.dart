@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/products.dart';
+import 'package:flutter_app/screens/filter_products/index.dart';
 import 'package:flutter_app/services/suggest_search_service.dart';
+import 'package:get/get.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key, required String title}) : _title = title;
@@ -26,7 +28,6 @@ class _SearchState extends State<Search> {
     _debounce = Timer(const Duration(milliseconds: 300), () async {
       try {
         final response = await SuggestSearchService().getSuggestions(name);
-        print("Suggestions: ${response.length}");
         setState(() {
           _suggestions = response;
           if (_overlayEntry != null) {
@@ -40,7 +41,6 @@ class _SearchState extends State<Search> {
   }
 
   void _onChanged(String value) {
-    print("Search value: $value");
     if (value.trim().isEmpty) {
       _overlayEntry?.remove();
       _overlayEntry = null;
@@ -52,6 +52,12 @@ class _SearchState extends State<Search> {
     }
   }
 
+  void _disableOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    FocusScope.of(context).unfocus();
+  }
+
   void _showOverLay(BuildContext context) {
     _overlayEntry = OverlayEntry(
       builder:
@@ -60,11 +66,7 @@ class _SearchState extends State<Search> {
               Positioned.fill(
                 top: 80,
                 child: GestureDetector(
-                  onTap: () {
-                    _overlayEntry?.remove();
-                    _overlayEntry = null;
-                    FocusScope.of(context).unfocus();
-                  },
+                  onTap: _disableOverlay,
                   child: Container(color: const Color.fromARGB(0, 0, 0, 0)),
                 ),
               ),
@@ -120,6 +122,14 @@ class _SearchState extends State<Search> {
     Overlay.of(context, debugRequiredFor: widget).insert(_overlayEntry!);
   }
 
+  void handleSearch() {
+    if (_searchController.text.isNotEmpty) {
+      _disableOverlay();
+      Get.to(FilterProducts(), arguments: _searchController.text);
+      _searchController.clear();
+    }
+  }
+
   @override
   void dispose() {
     _overlayEntry?.remove();
@@ -143,6 +153,7 @@ class _SearchState extends State<Search> {
             controller: _searchController,
             style: TextStyle(fontSize: 14),
             onChanged: _onChanged,
+            onSubmitted: (_) => handleSearch(),
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.only(
@@ -158,7 +169,7 @@ class _SearchState extends State<Search> {
                 borderSide: BorderSide.none,
               ),
               suffixIcon: IconButton(
-                onPressed: () {},
+                onPressed: handleSearch,
                 icon: Icon(Icons.search, color: Colors.blue, size: 24),
               ),
               fillColor: const Color.fromARGB(48, 158, 158, 158),

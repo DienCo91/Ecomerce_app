@@ -10,12 +10,17 @@ class TextFormFieldCustom extends StatefulWidget {
     required String label,
     Widget? prefixIcon,
     void Function(String)? onFieldSubmitted,
+    bool? isNumber = false,
+    String? initValue,
+    this.validator,
   }) : _controllerInput = controllerInput,
        _focusNode = focusNode,
        _type = type,
        _label = label,
        _prefixIcon = prefixIcon,
-       _onFieldSubmitted = onFieldSubmitted;
+       _onFieldSubmitted = onFieldSubmitted,
+       _isNumber = isNumber,
+       _initValue = initValue;
 
   final TextEditingController _controllerInput;
   final FocusNode? _focusNode;
@@ -23,6 +28,9 @@ class TextFormFieldCustom extends StatefulWidget {
   final String _label;
   final Widget? _prefixIcon;
   final void Function(String)? _onFieldSubmitted;
+  final bool? _isNumber;
+  final String? _initValue;
+  final String? Function(String)? validator;
 
   @override
   State<TextFormFieldCustom> createState() => _TextFormFieldCustomState();
@@ -32,6 +40,9 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
   bool _isShowPassword = false;
 
   String? handleValidator(value) {
+    if (widget.validator != null) {
+      return widget.validator!(value);
+    }
     if (value == null || value.isEmpty) {
       return '${widget._label} required !';
     } else if (!emailRegex.hasMatch(value) && widget._type == FieldType.email) {
@@ -47,6 +58,14 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (widget._initValue != null && widget._controllerInput.text.isEmpty) {
+      widget._controllerInput.text = widget._initValue!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
       focusNode: widget._focusNode,
@@ -57,22 +76,19 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
       decoration: InputDecoration(
         label: Text(widget._label),
         floatingLabelStyle: TextStyle(color: Colors.blue, fontSize: 18),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue, width: 1),
-        ),
+        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 1)),
         prefixIcon: widget._prefixIcon,
         suffixIcon:
             widget._type == FieldType.password
                 ? IconButton(
                   onPressed: handleShowPassword,
-                  icon: Icon(
-                    _isShowPassword ? Icons.visibility_off : Icons.visibility,
-                  ),
+                  icon: Icon(_isShowPassword ? Icons.visibility_off : Icons.visibility),
                 )
                 : null,
       ),
       onFieldSubmitted: widget?._onFieldSubmitted,
       validator: handleValidator,
+      keyboardType: widget._isNumber == true ? TextInputType.number : null,
     );
   }
 }

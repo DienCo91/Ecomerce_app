@@ -10,7 +10,7 @@ void showSnackBar({
 }) {
   Get.snackbar(
     "",
-    message,
+    "",
     backgroundColor: backgroundColor,
     colorText: textColor,
     snackPosition: position,
@@ -19,5 +19,6 @@ void showSnackBar({
     forwardAnimationCurve: Curves.easeIn,
     reverseAnimationCurve: Curves.easeIn,
     titleText: const SizedBox.shrink(),
+    messageText: Text(message, style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 14)),
   );
 }

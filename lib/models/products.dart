@@ -63,6 +63,10 @@ class Products {
       isLiked: json['isLiked'] ?? false,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {'product': id, 'quantity': quantity, 'price': price, 'taxable': taxable};
+  }
 }
 
 extension ProductCopy on Products {

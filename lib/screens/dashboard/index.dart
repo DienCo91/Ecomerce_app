@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/account_details.dart/index.dart';
 import 'package:flutter_app/screens/account_security/index.dart';
 import 'package:flutter_app/screens/login_signup/index.dart';
+import 'package:flutter_app/screens/order/index.dart';
 import 'package:flutter_app/widgets/header.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +14,7 @@ class Dashboard extends StatelessWidget {
     const List<Map<String, dynamic>> listDashBoard = [
       {"title": "Account Details", "icon": Icons.person, "to": AccountDetails()},
       {"title": "Account Security", "icon": Icons.security, "to": AccountSecurity()},
-      {"title": "Orders", "icon": Icons.shopping_cart},
+      {"title": "Orders", "icon": Icons.shopping_cart, "to": Order()},
     ];
 
     return Column(

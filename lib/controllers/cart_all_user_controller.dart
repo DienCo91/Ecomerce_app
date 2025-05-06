@@ -56,4 +56,13 @@ class CartAllUserController extends GetxController {
       carts.assignAll(saved.map((e) => CartUser.fromJson(Map<String, dynamic>.from(e))));
     }
   }
+
+  void clearCartOfUser(String userId) {
+    final index = carts.indexWhere((c) => c.userId == userId);
+    if (index != -1) {
+      carts[index].cart.clear();
+      carts.refresh();
+      saveCarts();
+    }
+  }
 }

@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/controllers/order_controller.dart';
-import 'package:flutter_app/models/orders.dart';
-import 'package:flutter_app/screens/order/widgets/order_item.dart';
-import 'package:flutter_app/services/order_service.dart';
-import 'package:flutter_app/utils/assets_animation.dart';
+import 'package:flutter_app/controllers/auth_controller.dart';
+import 'package:flutter_app/screens/order/widgets/my_order.dart';
 import 'package:flutter_app/widgets/app_scaffold.dart';
-import 'package:flutter_app/widgets/header.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class Order extends StatefulWidget {
   const Order({super.key});
@@ -17,121 +11,83 @@ class Order extends StatefulWidget {
   State<Order> createState() => _OrderState();
 }
 
-class _OrderState extends State<Order> {
-  final ScrollController _scrollController = ScrollController();
-  bool _isLoading = false;
-  int _page = 1;
-  final int _pageSize = 10;
-  bool _hasMore = true;
-  late OrderController orderController;
+class _OrderState extends State<Order> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final AuthController authController = Get.find();
+
+  late bool isAdmin;
+
+  late List<Widget> _tabs;
 
   @override
   void initState() {
     super.initState();
-    orderController = Get.put(OrderController());
+    isAdmin = authController.user.value!.user.role == "ROLE ADMIN";
 
-    _fetchOrders(orderController);
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
-        if (!_isLoading && _hasMore) {
-          _fetchOrders(orderController);
-        }
-      }
-    });
-  }
+    _tabs =
+        isAdmin
+            ? const [KeepAliveWrapper(child: MyOrder()), KeepAliveWrapper(child: MyOrder(isAllOrder: true))]
+            : const [KeepAliveWrapper(child: MyOrder())];
 
-  Future<void> _fetchOrders(OrderController orderController) async {
-    if (_isLoading || !_hasMore) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final orderResponse = await OrderService().getOrderByUser(page: _page, limit: _pageSize);
-      final newOrders = orderResponse.orders;
-      final filteredOrders = newOrders.where((order) => order.products.isNotEmpty).toList();
-      orderController.orders.addAll(filteredOrders);
-      _page++;
-      if (newOrders.length < _pageSize) _hasMore = false;
-    } catch (e) {
-      print("Error loading orders: $e");
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    _tabController = TabController(length: _tabs.length, vsync: this);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      appBar: AppBar(toolbarHeight: 0),
-      body: Column(
-        children: [
-          const Header(icon: Icons.shopping_cart, iconColor: Colors.blue, title: "Orders"),
-          Obx(() {
-            List<Orders> orders = orderController.orders;
-            if (orders.isEmpty && !_isLoading) {
-              return Expanded(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Lottie.asset(
-                        AssetsLottie.orderEmpty,
-                        width: 300,
-                        height: 300,
-                        fit: BoxFit.contain,
-                        repeat: true,
-                        animate: true,
-                      ),
-                      Text(
-                        "Order Empty!",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.2,
-                          fontFamily: 'Roboto',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-            return Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.only(bottom: 40),
-                controller: _scrollController,
-                itemCount: orders.length + (_isLoading ? 2 : 0),
-                itemBuilder: (context, index) {
-                  if (_isLoading && orders.isEmpty) {
-                    return Skeletonizer(enabled: _isLoading, child: OrderItem());
-                  }
-
-                  final order = orders[index];
-
-                  final String status = order.products.isNotEmpty ? order.products.first.status : "Unknown";
-                  if (order.products.isEmpty) return SizedBox();
-
-                  return OrderItem(order: order, status: status);
-                },
+      appBar: AppBar(
+        toolbarHeight: 0,
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: Colors.blue,
+          unselectedLabelColor: Colors.grey,
+          indicatorColor: Colors.blue,
+          dividerColor: Colors.transparent,
+          labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          tabs: [
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [Icon(Icons.shopping_bag_outlined, size: 20), SizedBox(width: 8), Text("My Order")],
               ),
-            );
-          }),
-        ],
+            ),
+            if (isAdmin)
+              Tab(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [Icon(Icons.list_alt_outlined, size: 20), SizedBox(width: 8), Text("Customer Order")],
+                ),
+              ),
+          ],
+        ),
       ),
+      body: TabBarView(controller: _tabController, physics: const ClampingScrollPhysics(), children: _tabs),
     );
   }
+}
+
+class KeepAliveWrapper extends StatefulWidget {
+  final Widget child;
+
+  const KeepAliveWrapper({Key? key, required this.child}) : super(key: key);
+
+  @override
+  State<KeepAliveWrapper> createState() => _KeepAliveWrapperState();
+}
+
+class _KeepAliveWrapperState extends State<KeepAliveWrapper> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }

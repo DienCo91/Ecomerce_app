@@ -7,9 +7,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ReviewProduct extends StatefulWidget {
-  const ReviewProduct({super.key, required this.name});
+  const ReviewProduct({super.key, required this.name, required this.id});
 
   final String name;
+  final String id;
 
   @override
   State<ReviewProduct> createState() => _ReviewProductState();
@@ -117,7 +118,7 @@ class _ReviewProductState extends State<ReviewProduct> {
               child: Column(
                 children: [
                   ...starDetail.entries.toList().map((e) {
-                    double percentage = (review.length > 0) ? (e.value / review.length) : 0;
+                    double percentage = (review.isNotEmpty) ? (e.value / review.length) : 0;
                     return Container(
                       margin: const EdgeInsets.only(top: 16),
                       child: Row(
@@ -142,7 +143,7 @@ class _ReviewProductState extends State<ReviewProduct> {
               ),
             ),
           ),
-          _isLoading ? SizedBox() : Comment(review: review),
+          _isLoading ? SizedBox() : Comment(review: review, id: widget.id),
         ],
       ),
     );

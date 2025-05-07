@@ -3,25 +3,28 @@ import 'package:flutter_app/models/orders.dart';
 import 'package:flutter_app/screens/order/widgets/image_item.dart';
 import 'package:flutter_app/screens/order_detail/index.dart';
 import 'package:flutter_app/utils/api_constants.dart';
+import 'package:flutter_app/utils/color.dart';
 import 'package:flutter_app/utils/string.dart';
 import 'package:get/get.dart';
 
 class OrderItem extends StatelessWidget {
-  const OrderItem({super.key, this.order, this.status});
+  const OrderItem({super.key, this.order, this.status, this.isAllOrder = false});
 
   final Orders? order;
 
   final String? status;
+  final bool? isAllOrder;
 
   @override
   Widget build(BuildContext context) {
+    Color color = getStatusColor(status);
     void onOrderTap() async {
       await Future.delayed(Durations.medium1);
       Get.to(
         OrderDetail(),
         transition: Transition.rightToLeftWithFade,
         duration: const Duration(milliseconds: 300),
-        arguments: {'order': order, 'status': status},
+        arguments: {'order': order, 'status': status, 'isAllOrder': isAllOrder},
       );
     }
 
@@ -59,7 +62,12 @@ class OrderItem extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Status: $status", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                      Row(
+                        children: [
+                          Text("Status: ", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                          Text(" $status", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: color)),
+                        ],
+                      ),
                       const SizedBox(height: 4),
                       Text("Order #${order?.id ?? ""}", style: const TextStyle(fontSize: 13)),
                       const SizedBox(height: 4),
@@ -68,7 +76,11 @@ class OrderItem extends StatelessWidget {
                         style: const TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                       const SizedBox(height: 4),
-                      Text("Order Total \$${order?.total.toStringAsFixed(2)}", style: const TextStyle(fontSize: 14)),
+                      if (order != null)
+                        Text(
+                          "Order Total: \$${(order!.total + order!.totalTax).toStringAsFixed(2)}",
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                        ),
                     ],
                   ),
                 ),

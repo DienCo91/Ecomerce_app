@@ -11,7 +11,6 @@ class LoginAndSignUp extends StatelessWidget {
       length: 2,
 
       child: Scaffold(
-        // extendBodyBehindAppBar: true,
         appBar: AppBar(
           toolbarHeight: 20,
           bottom: TabBar(

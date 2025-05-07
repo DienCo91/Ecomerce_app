@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/screens/account_details.dart/index.dart';
 import 'package:flutter_app/screens/account_security/index.dart';
 import 'package:flutter_app/screens/login_signup/index.dart';
@@ -11,11 +12,24 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const List<Map<String, dynamic>> listDashBoard = [
+    AuthController authController = Get.find();
+    bool isAdmin = authController.user.value?.user.role == "ROLE ADMIN";
+
+    final List<Map<String, dynamic>> listDashBoard = [
       {"title": "Account Details", "icon": Icons.person, "to": AccountDetails()},
       {"title": "Account Security", "icon": Icons.security, "to": AccountSecurity()},
       {"title": "Orders", "icon": Icons.shopping_cart, "to": Order()},
     ];
+
+    if (isAdmin) {
+      listDashBoard.addAll([
+        {"title": "Review", "icon": Icons.comment, "to": Order()},
+        {"title": "Products", "icon": Icons.list, "to": Order()},
+        {"title": "Users", "icon": Icons.people, "to": Order()},
+        {"title": "Categories", "icon": Icons.category, "to": Order()},
+        {"title": "Brand", "icon": Icons.diamond, "to": Order()},
+      ]);
+    }
 
     return Column(
       children: [

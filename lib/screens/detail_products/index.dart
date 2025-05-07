@@ -135,9 +135,12 @@ class _DetailProductState extends State<DetailProduct> {
                               topLeft: Radius.circular(100),
                               bottomLeft: Radius.circular(100),
                             ),
-                            color: Colors.blue,
+                            color: productDetail.quantity >= 1 ? Colors.blue : Colors.red,
                           ),
-                          child: Text("In Stock", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                          child: Text(
+                            productDetail.quantity >= 1 ? "In stock" : "Out of stock",
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                          ),
                         ),
                       ),
                       Obx(() => IconCardNumber(number: cardAllUser.getCartByUser(user.user.value!.user.id).length)),
@@ -200,37 +203,40 @@ class _DetailProductState extends State<DetailProduct> {
                         ],
                       ),
 
-                      Obx(() {
-                        final userId = user.user.value?.user.id ?? '';
-                        bool hasProductInCart = cardAllUser.hasProductInCart(userId, productDetail.id);
-                        return Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.only(top: 8),
-                          child: ElevatedButton.icon(
-                            icon: Icon(Icons.shopping_cart, size: 24, color: Colors.white),
-                            onPressed: () {
-                              if (hasProductInCart) {
-                                handleRemoveToCard();
-                              } else {
-                                handleAddToCard();
-                              }
-                            },
-                            label: Text(
-                              hasProductInCart ? "Remove To Cart" : "Add To Cart",
-                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(hasProductInCart ? Colors.red[400] : Colors.blue),
-                            ),
-                          ),
-                        );
-                      }),
+                      productDetail.quantity >= 1
+                          ? Obx(() {
+                            final userId = user.user.value?.user.id ?? '';
+                            bool hasProductInCart = cardAllUser.hasProductInCart(userId, productDetail.id);
+                            return Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(top: 8),
+                              child: ElevatedButton.icon(
+                                icon: Icon(Icons.shopping_cart, size: 24, color: Colors.white),
+                                onPressed: () {
+                                  if (hasProductInCart) {
+                                    handleRemoveToCard();
+                                  } else {
+                                    handleAddToCard();
+                                  }
+                                },
+                                label: Text(
+                                  hasProductInCart ? "Remove To Cart" : "Add To Cart",
+                                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    hasProductInCart ? Colors.red[400] : Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            );
+                          })
+                          : SizedBox(),
                     ],
                   ),
                 ),
                 DividerCustom(),
-                ReviewProduct(name: productDetail.name),
-                DividerCustom(),
+                ReviewProduct(name: productDetail.name, id: productDetail.id),
               ],
             ),
           ),

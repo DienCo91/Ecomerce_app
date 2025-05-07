@@ -5,6 +5,7 @@ import 'package:flutter_app/screens/order/index.dart';
 import 'package:flutter_app/screens/order_detail/widgets/order_item_cart.dart';
 import 'package:flutter_app/screens/order_detail/widgets/order_summary_section.dart';
 import 'package:flutter_app/services/order_service.dart';
+import 'package:flutter_app/utils/color.dart';
 import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:flutter_app/utils/string.dart';
 import 'package:flutter_app/widgets/app_scaffold.dart';
@@ -21,6 +22,7 @@ class OrderDetail extends StatefulWidget {
 class _OrderDetailState extends State<OrderDetail> {
   Orders? order;
   String? status;
+  bool? isAllOrder;
   bool _isLoading = false;
   late OrderController orderController;
 
@@ -31,21 +33,7 @@ class _OrderDetailState extends State<OrderDetail> {
     final args = Get.arguments as Map<String, dynamic>;
     order = args['order'] as Orders?;
     status = args['status'] as String?;
-  }
-
-  Color getStatusColor(String status) {
-    switch (status) {
-      case 'Not processed':
-        return Colors.blueGrey;
-      case 'Pending':
-        return Colors.yellow;
-      case 'Completed':
-        return Colors.green;
-      case 'Canceled':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
+    isAllOrder = args['isAllOrder'] as bool?;
   }
 
   void handleDeleteOrder() async {
@@ -54,7 +42,7 @@ class _OrderDetailState extends State<OrderDetail> {
     });
     try {
       await OrderService().deleteOrder(orderId: order!.id);
-      orderController.deleteOrder(order!.id);
+      isAllOrder == true ? orderController.deleteOrderAll(order!.id) : orderController.deleteOrder(order!.id);
       Get.back();
       Get.back();
       showSnackBar(message: "Cancel Order Success!");

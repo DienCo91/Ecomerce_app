@@ -47,7 +47,7 @@ class _ProductState extends State<Product> {
       }
 
       if (isActiveScale) {
-        await Future.delayed(Duration(milliseconds: 400));
+        await Future.delayed(Duration(milliseconds: 200));
         setState(() {
           _scale = 1.0;
         });
@@ -150,10 +150,10 @@ class _ProductState extends State<Product> {
                   onTap: onLiked,
                   child: AnimatedScale(
                     scale: _scale,
-                    duration: Duration(milliseconds: 400),
+                    duration: Duration(milliseconds: 200),
                     curve: Curves.easeOutBack,
                     child: AnimatedSwitcher(
-                      duration: Duration(milliseconds: 400),
+                      duration: Duration(milliseconds: 200),
                       child: Icon(
                         Icons.favorite,
                         key: ValueKey(_isFavorite),

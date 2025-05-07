@@ -24,6 +24,23 @@ class OrderService {
     }
   }
 
+  Future<OrderResponse> getOrderAll({required int page, required int limit}) async {
+    final AuthController user = Get.find<AuthController>();
+    final token = user.user.value?.token;
+
+    final response = await http.get(
+      Uri.parse('${ApiConstants.baseUrl}/api/order?page=${page}&limit=${limit}'),
+      headers: {'Authorization': token.toString(), 'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      return OrderResponse.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load orders: ${response.statusCode}');
+    }
+  }
+
   Future<String> addOrder({required String cartId, required int total}) async {
     final AuthController user = Get.find<AuthController>();
     final token = user.user.value?.token;

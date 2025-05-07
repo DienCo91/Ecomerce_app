@@ -1,11 +1,125 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/controllers/review_controller.dart';
 import 'package:flutter_app/models/review.dart';
 import 'package:flutter_app/utils/string.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 
 class Comment extends StatelessWidget {
-  const Comment({super.key, required this.review});
+  const Comment({super.key, required this.review, required this.id});
   final List<Review> review;
+  final String id;
+
+  void showCustomReviewDialog() {
+    final controller = Get.put(ReviewController());
+
+    showDialog(
+      context: Get.context!,
+      builder: (context) {
+        return Dialog(
+          insetPadding: EdgeInsets.symmetric(horizontal: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Add Review', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+                SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            floatingLabelStyle: TextStyle(color: Colors.blue),
+                            labelText: 'Title',
+                            hintText: 'Enter Review Title',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          onChanged: (value) => controller.title.value = value,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            floatingLabelStyle: TextStyle(color: Colors.blue),
+                            labelText: 'Comment',
+                            hintText: 'Write Review',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+                          ),
+                          maxLines: 4,
+                          onChanged: (value) => controller.comment.value = value,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text('Rating', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Obx(
+                        () => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(5, (index) {
+                            return IconButton(
+                              icon: Icon(
+                                Icons.star,
+                                size: 36,
+                                color:
+                                    controller.rating.value > index
+                                        ? Colors.amber
+                                        : const Color.fromARGB(88, 158, 158, 158),
+                              ),
+                              onPressed: () => controller.rating.value = index + 1,
+                            );
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Obx(
+                      () => TextButton(
+                        onPressed: controller.isLoading == true ? null : () => Get.back(),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: controller.isLoading == true ? Colors.grey : Colors.blue),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Obx(
+                      () => ElevatedButton(
+                        onPressed:
+                            controller.comment.trim().isNotEmpty &&
+                                    controller.title.trim().isNotEmpty &&
+                                    controller.isLoading == false
+                                ? () => controller.publishReview(id)
+                                : null,
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                        child: const Text('Publish Review', style: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +128,18 @@ class Comment extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Comment :", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Comment :", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              TextButton.icon(
+                onPressed: showCustomReviewDialog,
+                label: Text("Add Review", style: TextStyle(color: Colors.blue, fontSize: 14)),
+                icon: Icon(Icons.comment),
+                style: ElevatedButton.styleFrom(iconColor: Colors.blue, iconSize: 24),
+              ),
+            ],
+          ),
           if (review.isEmpty)
             Container(
               padding: const EdgeInsets.symmetric(vertical: 16),

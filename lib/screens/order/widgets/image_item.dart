@@ -10,7 +10,7 @@ class ImageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imagesToShow = listImage.take(4).toList();
+    final imagesToShow = listImage.take(1).toList();
     final count = imagesToShow.length;
     return SizedBox(
       width: 80,

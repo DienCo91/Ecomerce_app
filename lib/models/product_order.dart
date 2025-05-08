@@ -33,4 +33,26 @@ class ProductOrder {
       product: Products.fromJson(json['product'] ?? {}), // Default to empty map if null
     );
   }
+
+  ProductOrder copyWith({
+    double? purchasePrice,
+    double? totalPrice,
+    double? priceWithTax,
+    double? totalTax,
+    String? status,
+    String? id,
+    int? quantity,
+    Products? product,
+  }) {
+    return ProductOrder(
+      purchasePrice: purchasePrice ?? this.purchasePrice,
+      totalPrice: totalPrice ?? this.totalPrice,
+      priceWithTax: priceWithTax ?? this.priceWithTax,
+      totalTax: totalTax ?? this.totalTax,
+      status: status ?? this.status,
+      id: id ?? this.id,
+      quantity: quantity ?? this.quantity,
+      product: product ?? this.product,
+    );
+  }
 }

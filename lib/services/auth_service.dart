@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/models/auth.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_app/models/register_request.dart';
 import 'package:flutter_app/utils/api_constants.dart';
 import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
@@ -100,6 +103,38 @@ class AuthService {
       final String dataRes = jsonDecode(response.body)['error'];
       showSnackBar(message: dataRes, backgroundColor: Colors.red);
       throw Exception("Error resetPassword");
+    }
+  }
+
+  Future<LoginResponse?> signInWithGoogle() async {
+    await Firebase.initializeApp();
+
+    final googleSignIn = GoogleSignIn();
+    await googleSignIn.signOut();
+
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return null;
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+
+    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    final idToken = await userCredential.user?.getIdToken();
+
+    final response = await http.post(
+      Uri.parse("${ApiConstants.baseUrl}/api/auth/google"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"idToken": idToken}),
+    );
+
+    print('==========$response');
+
+    if (response.statusCode == 200) {
+      return LoginResponse.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    } else {
+      throw Exception("Failed Login GG");
     }
   }
 }

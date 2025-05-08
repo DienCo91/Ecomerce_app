@@ -7,6 +7,7 @@ class Orders {
   final List<ProductOrder> products;
   final double totalTax;
   final double totalWithTax;
+  final String cartId;
 
   Orders({
     required this.id,
@@ -15,6 +16,7 @@ class Orders {
     required this.products,
     required this.totalTax,
     required this.totalWithTax,
+    required this.cartId,
   });
 
   factory Orders.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,27 @@ class Orders {
       products: productsList.map((e) => ProductOrder.fromJson(e as Map<String, dynamic>)).toList(),
       totalTax: (json['totalTax'] as num? ?? 0).toDouble(),
       totalWithTax: (json['totalWithTax'] as num? ?? 0).toDouble(),
+      cartId: (json['cartId'] as String? ?? ""),
+    );
+  }
+
+  Orders copyWith({
+    String? id,
+    double? total,
+    DateTime? created,
+    List<ProductOrder>? products,
+    double? totalTax,
+    double? totalWithTax,
+    String? cartId,
+  }) {
+    return Orders(
+      id: id ?? this.id,
+      total: total ?? this.total,
+      created: created ?? this.created,
+      products: products ?? this.products,
+      totalTax: totalTax ?? this.totalTax,
+      totalWithTax: totalWithTax ?? this.totalWithTax,
+      cartId: cartId ?? this.cartId,
     );
   }
 }

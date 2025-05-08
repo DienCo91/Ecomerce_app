@@ -13,10 +13,7 @@ class AppScaffold extends Scaffold {
     bool resizeToAvoidBottomInset = true,
   }) : super(
          appBar: appBar ?? AppBar(title: Text(title)),
-         body: Container(
-           padding: EdgeInsets.only(left: 16, right: 16),
-           child: body,
-         ),
+         body: Container(padding: EdgeInsets.only(left: 16, right: 16), child: body),
          drawer: drawer,
          bottomNavigationBar: bottomNavigationBar,
          floatingActionButton: floatingActionButton,

@@ -74,4 +74,26 @@ class OrderService {
       throw Exception('Failed to delete orders: ${response.statusCode}');
     }
   }
+
+  Future<bool> updateStatusOrder({
+    required String orderId,
+    required String cartId,
+    required String status,
+    required String productId,
+  }) async {
+    final AuthController user = Get.find<AuthController>();
+    final token = user.user.value?.token;
+
+    final response = await http.put(
+      Uri.parse('${ApiConstants.baseUrl}/api/order/status/item/$productId'),
+      headers: {'Authorization': token.toString(), 'Content-Type': 'application/json'},
+      body: jsonEncode({'cartId': cartId, 'orderId': orderId, 'status': status}),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception('Failed to delete orders: ${response.statusCode}');
+    }
+  }
 }

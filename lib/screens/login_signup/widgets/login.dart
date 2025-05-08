@@ -70,6 +70,26 @@ class _LoginState extends State<Login> {
     }
   }
 
+  void handleLoginWithGoogle() async {
+    setState(() {
+      _isLoadingBtn = true;
+    });
+    try {
+      final response = await AuthService().signInWithGoogle();
+      if (response != null) {
+        print(response);
+        auth.setUser(response);
+        Get.offAll(Home());
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isLoadingBtn = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -164,9 +184,11 @@ class _LoginState extends State<Login> {
                           width: double.infinity,
                           margin: EdgeInsets.only(top: 24, bottom: 16),
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: _isLoadingBtn == true ? null : handleLoginWithGoogle,
                             style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
+                              backgroundColor: WidgetStatePropertyAll<Color>(
+                                _isLoadingBtn == true ? Colors.grey : Colors.white,
+                              ),
                               shape: WidgetStatePropertyAll(
                                 RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
                               ),
@@ -189,14 +211,6 @@ class _LoginState extends State<Login> {
                                 ),
                               ],
                             ),
-                            // icon: SizedBox(
-                            //   width: 20,
-                            //   height: 20,z
-                            //   child: CircularProgressIndicator(
-                            //     strokeWidth: 2,
-                            //     valueColor: AlwaysStoppedAnimation(Colors.grey),
-                            //   ),
-                            // ),
                           ),
                         ),
 

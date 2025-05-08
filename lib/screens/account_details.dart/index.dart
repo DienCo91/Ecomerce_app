@@ -80,19 +80,21 @@ class _AccountDetailsState extends State<AccountDetails> {
 
   Widget _buildUserInfoHeader(AuthController authController) {
     final user = authController.user.value?.user;
-    return Row(
-      children: [
-        Text(user?.email ?? "", style: TextStyle(fontSize: 16)),
-        const SizedBox(width: 24),
-        Container(
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 226, 226, 226),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Text(user?.role.replaceAll("ROLE", "").toLowerCase() ?? "", style: TextStyle(fontSize: 14)),
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(8)),
+      child: RichText(
+        text: TextSpan(
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
+          children: [
+            const TextSpan(text: "Email: ", style: TextStyle(fontWeight: FontWeight.bold)),
+            TextSpan(text: user?.email ?? "Chưa có email"),
+          ],
         ),
-      ],
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 
@@ -127,7 +129,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   @override
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
-
+    final user = authController.user.value?.user;
     return AppScaffold(
       appBar: AppBar(toolbarHeight: 0),
       body: SingleChildScrollView(
@@ -135,7 +137,21 @@ class _AccountDetailsState extends State<AccountDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Header(icon: Icons.person, iconColor: Colors.blue, title: "Account Details"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Header(icon: Icons.person, iconColor: Colors.blue, title: "Account Details"),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 226, 226, 226),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Text(user?.role.replaceAll("ROLE", "").toLowerCase() ?? "", style: TextStyle(fontSize: 14)),
+                ),
+              ],
+            ),
+
             const SizedBox(height: 16),
             _buildUserInfoHeader(authController),
             const SizedBox(height: 12),

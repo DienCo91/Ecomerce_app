@@ -6,6 +6,7 @@ import 'package:flutter_app/screens/login_signup/index.dart';
 import 'package:flutter_app/screens/order/index.dart';
 import 'package:flutter_app/widgets/header.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -86,7 +87,9 @@ class Dashboard extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed: () {
+            onPressed: () async {
+              final googleSignIn = GoogleSignIn();
+              await googleSignIn.signOut();
               Get.offAll(LoginAndSignUp());
             },
             icon: const Icon(Icons.logout, color: Colors.white),

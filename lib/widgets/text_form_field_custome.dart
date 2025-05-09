@@ -1,5 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/common/constants.dart';
+
+class _NoLeadingZeroInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isEmpty || newValue.text.startsWith(RegExp(r'[1-9]'))) {
+      return newValue;
+    }
+
+    if (newValue.text == '0') {
+      return newValue;
+    }
+
+    String newText = newValue.text.replaceFirst(RegExp(r'^0+'), '');
+    return TextEditingValue(text: newText, selection: TextSelection.collapsed(offset: newText.length));
+  }
+}
 
 class TextFormFieldCustom extends StatefulWidget {
   const TextFormFieldCustom({
@@ -13,6 +30,8 @@ class TextFormFieldCustom extends StatefulWidget {
     bool? isNumber = false,
     String? initValue,
     this.validator,
+    this.maxLines = 1,
+    this.isBlockFirstZero,
   }) : _controllerInput = controllerInput,
        _focusNode = focusNode,
        _type = type,
@@ -31,6 +50,8 @@ class TextFormFieldCustom extends StatefulWidget {
   final bool? _isNumber;
   final String? _initValue;
   final String? Function(String)? validator;
+  final int? maxLines;
+  final bool? isBlockFirstZero;
 
   @override
   State<TextFormFieldCustom> createState() => _TextFormFieldCustomState();
@@ -89,6 +110,8 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
       onFieldSubmitted: widget?._onFieldSubmitted,
       validator: handleValidator,
       keyboardType: widget._isNumber == true ? TextInputType.number : null,
+      maxLines: widget.maxLines,
+      inputFormatters: widget.isBlockFirstZero == true ? [_NoLeadingZeroInputFormatter()] : null,
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_app/screens/account_details.dart/index.dart';
 import 'package:flutter_app/screens/account_security/index.dart';
 import 'package:flutter_app/screens/login_signup/index.dart';
 import 'package:flutter_app/screens/order/index.dart';
+import 'package:flutter_app/screens/products_manage/index.dart';
 import 'package:flutter_app/screens/review/index.dart';
 import 'package:flutter_app/widgets/header.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,7 @@ class Dashboard extends StatelessWidget {
     if (isAdmin) {
       listDashBoard.addAll([
         {"title": "Review", "icon": Icons.comment, "to": ReviewScreen()},
-        {"title": "Products", "icon": Icons.list, "to": Order()},
+        {"title": "Products", "icon": Icons.list, "to": ProductsManage()},
         {"title": "Users", "icon": Icons.people, "to": Order()},
       ]);
     }

@@ -3,6 +3,7 @@ import 'package:flutter_app/models/review.dart';
 import 'package:flutter_app/services/review_service.dart';
 import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 
 class ReviewItem extends StatefulWidget {
   const ReviewItem({super.key, this.review});
@@ -37,23 +38,37 @@ class _ReviewItemState extends State<ReviewItem> {
     }
   }
 
-  void handleDelete() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      await ReviewService().deleteReviewById(id: widget.review?.id ?? "");
-      setState(() {
-        isDeleted = true;
-      });
-      showSnackBar(message: "Delete Success");
-    } catch (e) {
-      print(e);
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+  void handleDelete() {
+    Get.defaultDialog(
+      title: 'Delete Confirmation',
+      middleText: 'Are you sure you want to delete this review?',
+      textCancel: 'Cancel',
+      textConfirm: 'Delete',
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.redAccent,
+      cancelTextColor: Colors.black,
+      onConfirm: () async {
+        Get.back();
+        setState(() {
+          isLoading = true;
+        });
+
+        try {
+          await ReviewService().deleteReviewById(id: widget.review?.id ?? "");
+          setState(() {
+            isDeleted = true;
+          });
+          showSnackBar(message: "Delete Success");
+        } catch (e) {
+          print(e);
+        } finally {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      },
+      onCancel: () {},
+    );
   }
 
   @override

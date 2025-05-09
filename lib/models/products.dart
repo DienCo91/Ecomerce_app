@@ -46,7 +46,10 @@ class Products {
       id: json['_id'] as String? ?? '',
       taxable: json['taxable'] as bool? ?? false,
       isActive: json['isActive'] as bool? ?? false,
-      brand: json['brand'] != null ? Brand.fromJson(json['brand']) : Brand(id: '', name: '', isActive: false),
+      brand:
+          json['brand'] != null && json['brand'] is! String
+              ? Brand.fromJson(json['brand'])
+              : Brand(id: '', name: '', isActive: false),
       sku: json['sku'] as String? ?? '',
       name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',

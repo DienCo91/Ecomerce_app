@@ -1,89 +1,89 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_app/common/constants.dart';
-import 'package:flutter_app/controllers/auth_controller.dart';
-import 'package:flutter_app/models/login_request.dart';
-import 'package:flutter_app/screens/home/index.dart';
-import 'package:flutter_app/widgets/text_form_field_custome.dart';
-import 'package:flutter_app/services/auth_service.dart';
-import 'package:flutter_app/utils/assets_animation.dart';
-import 'package:flutter_app/utils/assets_image.dart';
-import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_app/common/constants.dart';
+// import 'package:flutter_app/controllers/auth_controller.dart';
+// import 'package:flutter_app/models/login_request.dart';
+// import 'package:flutter_app/screens/home/index.dart';
+// import 'package:flutter_app/widgets/text_form_field_custome.dart';
+// import 'package:flutter_app/services/auth_service.dart';
+// import 'package:flutter_app/utils/assets_animation.dart';
+// import 'package:flutter_app/utils/assets_image.dart';
+// import 'package:get/get.dart';
+// import 'package:lottie/lottie.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+// class Login extends StatefulWidget {
+//   const Login({super.key});
 
-  @override
-  State<Login> createState() => _LoginState();
-}
+//   @override
+//   State<Login> createState() => _LoginState();
+// }
 
-class _LoginState extends State<Login> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _controllerInputEmail;
-  late TextEditingController _controllerInputPassword;
-  late FocusNode _focusNodePassword;
-  bool _isLoadingBtn = false;
-  final AuthController auth = Get.put(AuthController());
+// class _LoginState extends State<Login> {
+//   final _formKey = GlobalKey<FormState>();
+//   late TextEditingController _controllerInputEmail;
+//   late TextEditingController _controllerInputPassword;
+//   late FocusNode _focusNodePassword;
+//   bool _isLoadingBtn = false;
+//   final AuthController auth = Get.put(AuthController());
 
-  @override
-  void initState() {
-    super.initState();
-    _controllerInputEmail = TextEditingController();
-    _controllerInputPassword = TextEditingController();
-    _focusNodePassword = FocusNode();
-  }
-
-
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controllerInputEmail = TextEditingController();
+//     _controllerInputPassword = TextEditingController();
+//     _focusNodePassword = FocusNode();
+//   }
 
 
-  void handleGoSignUp() {
-    final controller = DefaultTabController.of(context);
-    if (controller != null) {
-      controller.animateTo(1);
-    }
-  }
 
-  void handleLogin() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoadingBtn = true;
-      });
-      try {
-        final data = await AuthService().loginUser(
-          LoginRequest(email: _controllerInputEmail.text, password: _controllerInputPassword.text),
-        );
-        print(data);
-        auth.setUser(data);
-        Get.offAll(Home());
-      } catch (e) {
-        print("Error ${e}");
-      } finally {
-        setState(() {
-          _isLoadingBtn = false;
-        });
-      }
-    }
-  }
 
-  void handleLoginWithGoogle() async {
-    setState(() {
-      _isLoadingBtn = true;
-    });
-    try {
-      final response = await AuthService().signInWithGoogle();
-      if (response != null) {
-        print(response);
-        auth.setUser(response);
-        Get.offAll(Home());
-      }
-    } catch (e) {
-      print(e);
-    } finally {
-      setState(() {
-        _isLoadingBtn = false;
-      });
-    }
-  }
+//   void handleGoSignUp() {
+//     final controller = DefaultTabController.of(context);
+//     if (controller != null) {
+//       controller.animateTo(1);
+//     }
+//   }
+
+//   void handleLogin() async {
+//     if (_formKey.currentState!.validate()) {
+//       setState(() {
+//         _isLoadingBtn = true;
+//       });
+//       try {
+//         final data = await AuthService().loginUser(
+//           LoginRequest(email: _controllerInputEmail.text, password: _controllerInputPassword.text),
+//         );
+//         print(data);
+//         auth.setUser(data);
+//         Get.offAll(Home());
+//       } catch (e) {
+//         print("Error ${e}");
+//       } finally {
+//         setState(() {
+//           _isLoadingBtn = false;
+//         });
+//       }
+//     }
+//   }
+
+//   void handleLoginWithGoogle() async {
+//     setState(() {
+//       _isLoadingBtn = true;
+//     });
+//     try {
+//       final response = await AuthService().signInWithGoogle();
+//       if (response != null) {
+//         print(response);
+//         auth.setUser(response);
+//         Get.offAll(Home());
+//       }
+//     } catch (e) {
+//       print(e);
+//     } finally {
+//       setState(() {
+//         _isLoadingBtn = false;
+//       });
+//     }
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +120,45 @@ class _LoginState extends State<Login> {
                     key: _formKey,
                     child: Column(
                       children: [
+                        <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Git Commit UI</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2em; background: #f5f5f5; }
+    .container { max-width: 500px; margin: auto; background: white; padding: 2em; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 1em; }
+    input, textarea, button { width: 100%; padding: 0.8em; margin-top: 0.5em; }
+    button { background: #2d8cf0; color: white; border: none; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Git Commit UI</h2>
+    <form id="commitForm">
+      <label for="filename">File name:</label>
+      <input type="text" id="filename" name="filename" placeholder="e.g. main.py">
+
+      <label for="message">Commit message:</label>
+      <textarea id="message" name="message" rows="4" placeholder="e.g. Fix bug in login function"></textarea>
+
+      <button type="submit">Commit</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('commitForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const filename = document.getElementById('filename').value;
+      const message = document.getElementById('message').value;
+      alert(`git add ${filename}\ngit commit -m "${message}"`);
+      // Thực tế cần xử lý server-side hoặc sử dụng Node.js để chạy Git lệnh.
+    });
+  </script>
+</body>
+</html>
+
                         TextFormFieldCustom(
                           controllerInput: _controllerInputEmail,
                           onFieldSubmitted: (value) => _focusNodePassword.requestFocus(),

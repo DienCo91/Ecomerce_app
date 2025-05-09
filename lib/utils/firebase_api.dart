@@ -1,45 +1,42 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_app/screens/home/index.dart';
-import 'package:get/get.dart';
+im<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Git Commit UI</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2em; background: #f5f5f5; }
+    .container { max-width: 500px; margin: auto; background: white; padding: 2em; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 1em; }
+    input, textarea, button { width: 100%; padding: 0.8em; margin-top: 0.5em; }
+    button { background: #2d8cf0; color: white; border: none; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Git Commit UI</h2>
+    <form id="commitForm">
+      <label for="filename">File name:</label>
+      <input type="text" id="filename" name="filename" placeholder="e.g. main.py">
 
-@pragma('vm:entry-point')
-Future<void> handlerBackgroundMessage(RemoteMessage message) async {
-  print("message.notification?.title ${message.notification?.title}");
-  print(message.notification?.body);
-  print(message.data);
-}
+      <label for="message">Commit message:</label>
+      <textarea id="message" name="message" rows="4" placeholder="e.g. Fix bug in login function"></textarea>
 
-class FirebaseApi {
-  final _firebaseMessaging = FirebaseMessaging.instance;
+      <button type="submit">Commit</button>
+    </form>
+  </div>
 
-  void handleMessage(RemoteMessage? message) {
-    if (message == null) return;
-
-    Get.to(Home(), arguments: message);
-  }
-
-  Future initPushNotification() async {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
-    FirebaseMessaging.instance.getInitialMessage().then(
-      handleMessage,
-    ); //close app -> mo app
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage); // background
-    FirebaseMessaging.onBackgroundMessage(
-      handlerBackgroundMessage,
-    ); // chay ngam khi kill app
-  }
-
-  Future<void> initNotification() async {
-    await _firebaseMessaging.requestPermission();
-    final fCMToken = await _firebaseMessaging.getToken();
-    print('fCMToken ${fCMToken}');
-    FirebaseMessaging.onBackgroundMessage(handlerBackgroundMessage);
+  <script>
+    document.getElementById('commitForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const filename = document.getElementById('filename').value;
+      const message = document.getElementById('message').value;
+      alert(`git add ${filename}\ngit commit -m "${message}"`);
+      // Thực tế cần xử lý server-side hoặc sử dụng Node.js để chạy Git lệnh.
+    });
+  </script>
+</body>
+</html>
 
     FirebaseMessaging.onMessage.listen((message) {
       final context = Get.context;

@@ -8,6 +8,7 @@ import 'package:flutter_app/models/auth.dart';
 import 'package:flutter_app/models/login_request.dart';
 import 'package:flutter_app/models/login_response.dart';
 import 'package:flutter_app/models/register_request.dart';
+import 'package:flutter_app/models/user.dart';
 import 'package:flutter_app/utils/api_constants.dart';
 import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:get/get.dart';
@@ -129,12 +130,25 @@ class AuthService {
       body: jsonEncode({"idToken": idToken}),
     );
 
-    print('==========$response');
-
     if (response.statusCode == 200) {
       return LoginResponse.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
     } else {
       throw Exception("Failed Login GG");
+    }
+  }
+
+  Future<UserResponse> getAllUser({required int page, required int limit}) async {
+    final AuthController user = Get.find<AuthController>();
+    final token = user.user.value?.token;
+
+    final response = await http.get(
+      Uri.parse('${ApiConstants.baseUrl}/api/user?page=$page&limit=$limit'),
+      headers: {'Authorization': token.toString(), 'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 200) {
+      return UserResponse.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception("Error register");
     }
   }
 }

@@ -33,13 +33,8 @@ class _LoginState extends State<Login> {
     _focusNodePassword = FocusNode();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _controllerInputEmail.dispose();
-    _controllerInputPassword.dispose();
-    _focusNodePassword.dispose();
-  }
+
+
 
   void handleGoSignUp() {
     final controller = DefaultTabController.of(context);

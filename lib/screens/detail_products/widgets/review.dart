@@ -106,13 +106,7 @@ class _ReviewProductState extends State<ReviewProduct> {
               padding: const EdgeInsets.only(top: 8, left: 16, right: 16, bottom: 24),
               decoration: BoxDecoration(
                 color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(33, 0, 0, 0), // Màu sắc bóng
-                    blurRadius: 4, // Độ mờ của bóng
-                    offset: Offset(0, 1), // Vị trí bóng (Offset(x, y))
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: const Color.fromARGB(33, 0, 0, 0), blurRadius: 4, offset: Offset(0, 1))],
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               child: Column(
@@ -124,17 +118,20 @@ class _ReviewProductState extends State<ReviewProduct> {
                       child: Row(
                         children: [
                           Text('${e.key} Star'),
-                          SizedBox(width: 24),
+                          const SizedBox(width: 20),
                           Expanded(
                             child: LinearProgressIndicator(
                               value: percentage,
                               minHeight: 12,
                               backgroundColor: const Color.fromARGB(255, 226, 226, 226),
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                              valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
                             ),
                           ),
-                          SizedBox(width: 24),
-                          Text('${percentage * 100} %'),
+                          const SizedBox(width: 20),
+                          SizedBox(
+                            width: 46,
+                            child: Text('${(percentage * 100).toStringAsFixed(0)} %', textAlign: TextAlign.end),
+                          ),
                         ],
                       ),
                     );

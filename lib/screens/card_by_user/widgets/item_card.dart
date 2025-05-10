@@ -68,7 +68,7 @@ class ItemCard extends StatelessWidget {
                   image: NetworkImage('${ApiConstants.baseUrl}${product.imageUrl}'),
                   fit: BoxFit.contain,
                   imageErrorBuilder: (context, error, stackTrace) {
-                    return Image(image: AssetsImages.defaultImage, fit: BoxFit.cover);
+                    return Image(image: AssetsImages.defaultImage, fit: BoxFit.contain);
                   },
                 ),
               ),

@@ -183,7 +183,7 @@ class Comment extends StatelessWidget {
                         ),
                         SizedBox(width: 8),
                         RatingBar.builder(
-                          initialRating: e.rating.toDouble(),
+                          initialRating: double.parse(e.rating.toStringAsFixed(2)),
                           minRating: 0,
                           direction: Axis.horizontal,
                           itemCount: 5,
@@ -200,6 +200,8 @@ class Comment extends StatelessWidget {
                     ),
                     Text(formatDate(e.created), style: TextStyle(color: Color.fromARGB(82, 0, 0, 0), fontSize: 12)),
                     Container(margin: const EdgeInsets.only(top: 8), child: Text(e.title)),
+                    SizedBox(height: 8),
+                    Text(e.review, style: TextStyle(fontStyle: FontStyle.italic)),
                   ],
                 ),
               );

@@ -5,6 +5,8 @@ final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
 enum FieldType { email, password, text }
 
+enum DetailType { add, update }
+
 Products fakeData = Products(
   id: "6815a969fff0414534466851",
   name: "Nuc M15 Kit",

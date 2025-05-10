@@ -13,9 +13,25 @@ class User {
   }
 }
 
+class Product {
+  final String id;
+  final String name;
+  final String slug;
+
+  Product({required this.id, required this.name, required this.slug});
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(id: json['_id'], name: json['name'], slug: json['slug']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'_id': id, 'name': name, 'slug': slug};
+  }
+}
+
 class Review {
   final String id;
-  final String productId;
+  final Product product;
   final User user;
   final int rating;
   final bool isRecommended;
@@ -27,7 +43,7 @@ class Review {
 
   Review({
     required this.id,
-    required this.productId,
+    required this.product,
     required this.user,
     required this.rating,
     required this.isRecommended,
@@ -39,10 +55,17 @@ class Review {
   });
 
   factory Review.fromJson(Map<String, dynamic> json) {
+    final dynamic productData = json['product'] ?? "";
+    final Product parsedProduct =
+        productData is String ? Product(id: productData, name: '', slug: '') : Product.fromJson(productData);
+
+    final dynamic userData = json['user'];
+    final User parsedUser = userData is String ? User(id: userData, firstName: '') : User.fromJson(userData);
+
     return Review(
       id: json['_id'],
-      productId: json['product'],
-      user: User.fromJson(json['user']),
+      product: parsedProduct,
+      user: parsedUser,
       rating: json['rating'],
       isRecommended: json['isRecommended'],
       status: json['status'],
@@ -56,7 +79,7 @@ class Review {
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
-      'product': productId,
+      'product': product.toJson(),
       'user': user.toJson(),
       'rating': rating,
       'isRecommended': isRecommended,

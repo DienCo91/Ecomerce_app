@@ -43,7 +43,10 @@ class _ShopState extends State<Shop> {
     try {
       final response = await ProductService().fetchProducts(filterParams);
       setState(() {
-        _products = filterParams["page"] != 1 ? [..._products, ...response.products] : response.products;
+        List<Products> filteredProducts = response.products.where((product) => product.isActive == true).toList();
+
+        _products = filterParams["page"] != 1 ? [..._products, ...filteredProducts] : filteredProducts;
+
         _currentPage = response.currentPage;
         _isLoadMore = response.products.length < 10 ? false : true;
       });
@@ -100,6 +103,7 @@ class _ShopState extends State<Shop> {
                   children: [Text("Products", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))],
                 ),
               ),
+              if (_products.isEmpty && _isLoading == false) Center(child: Text('Empty Product ')),
             ],
           ),
         ),
@@ -131,6 +135,7 @@ class _ShopState extends State<Shop> {
                   ),
                 );
               }
+
               final Products p = _products[index];
               return Product(
                 key: ValueKey(p.id),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/controllers/order_controller.dart';
 import 'package:flutter_app/models/orders.dart';
-import 'package:flutter_app/screens/order/index.dart';
 import 'package:flutter_app/screens/order_detail/widgets/order_item_cart.dart';
 import 'package:flutter_app/screens/order_detail/widgets/order_summary_section.dart';
+import 'package:flutter_app/screens/order_detail/widgets/status.dart';
 import 'package:flutter_app/services/order_service.dart';
 import 'package:flutter_app/utils/color.dart';
 import 'package:flutter_app/utils/showSnackBar.dart';
@@ -117,23 +117,14 @@ class _OrderDetailState extends State<OrderDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        const Text("Status:", style: TextStyle(fontWeight: FontWeight.w600)),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: getStatusColor(status!),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Text(
-                            status!,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ],
-                    ),
+                    if (order != null)
+                      Status(
+                        status: status ?? "",
+                        isAdmin: isAllOrder ?? false,
+                        cartId: order?.cartId ?? "",
+                        orderId: order?.id ?? "",
+                        productId: order?.products[0].id ?? "",
+                      ),
                     const SizedBox(height: 12),
                     Row(
                       children: [

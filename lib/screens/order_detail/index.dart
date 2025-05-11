@@ -5,7 +5,6 @@ import 'package:flutter_app/screens/order_detail/widgets/order_item_cart.dart';
 import 'package:flutter_app/screens/order_detail/widgets/order_summary_section.dart';
 import 'package:flutter_app/screens/order_detail/widgets/status.dart';
 import 'package:flutter_app/services/order_service.dart';
-import 'package:flutter_app/utils/color.dart';
 import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:flutter_app/utils/string.dart';
 import 'package:flutter_app/widgets/app_scaffold.dart';
@@ -22,6 +21,7 @@ class OrderDetail extends StatefulWidget {
 class _OrderDetailState extends State<OrderDetail> {
   Orders? order;
   String? status;
+  String? orderId;
   bool? isAllOrder;
   bool _isLoading = false;
   late OrderController orderController;
@@ -29,11 +29,36 @@ class _OrderDetailState extends State<OrderDetail> {
   @override
   void initState() {
     super.initState();
-    orderController = Get.find();
+    orderController = Get.put(OrderController());
     final args = Get.arguments as Map<String, dynamic>;
     order = args['order'] as Orders?;
     status = args['status'] as String?;
     isAllOrder = args['isAllOrder'] as bool?;
+    orderId = args['orderId'] as String?;
+    print(orderId);
+    if (order == null && orderId != null) {
+      handleGetOrder(orderId!);
+    }
+  }
+
+  void handleGetOrder(String id) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response = await OrderService().getOrderById(id: id);
+      setState(() {
+        order = response;
+        status = response.products[0].status;
+        print(status);
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void handleDeleteOrder() async {
@@ -94,6 +119,15 @@ class _OrderDetailState extends State<OrderDetail> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return AppScaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: const Center(
+          child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator(color: Colors.blue, strokeWidth: 2)),
+        ),
+      );
+    }
+
     if (order == null || status == null) {
       return const Scaffold(body: Center(child: Text("Empty")));
     }

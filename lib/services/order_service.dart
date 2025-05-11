@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/models/order_response.dart';
+import 'package:flutter_app/models/orders.dart';
 import 'package:flutter_app/utils/api_constants.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -36,6 +37,23 @@ class OrderService {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       return OrderResponse.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load orders: ${response.statusCode}');
+    }
+  }
+
+  Future<Orders> getOrderById({required String id}) async {
+    final AuthController user = Get.find<AuthController>();
+    final token = user.user.value?.token;
+
+    final response = await http.get(
+      Uri.parse('${ApiConstants.baseUrl}/api/order/$id'),
+      headers: {'Authorization': token.toString(), 'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body)['order'];
+      return Orders.fromJson(jsonData);
     } else {
       throw Exception('Failed to load orders: ${response.statusCode}');
     }

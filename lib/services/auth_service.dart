@@ -10,6 +10,7 @@ import 'package:flutter_app/models/login_response.dart';
 import 'package:flutter_app/models/register_request.dart';
 import 'package:flutter_app/models/user.dart';
 import 'package:flutter_app/utils/api_constants.dart';
+import 'package:flutter_app/utils/firebase_api.dart';
 import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -17,10 +18,16 @@ import 'package:http/http.dart' as http;
 
 class AuthService {
   Future<LoginResponse> loginUser(LoginRequest loginData) async {
+    String? deviceToken = await FirebaseApi().getFCMToken();
+
     final response = await http.post(
       Uri.parse('${ApiConstants.baseUrl}/api/auth/login'),
       headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode(<String, String>{'email': loginData.email, 'password': loginData.password}),
+      body: jsonEncode(<String, String>{
+        'email': loginData.email,
+        'password': loginData.password,
+        'deviceToken': deviceToken ?? "",
+      }),
     );
 
     if (response.statusCode == 200) {
@@ -39,10 +46,12 @@ class AuthService {
   }
 
   Future<LoginResponse> registerUser(RegisterRequest registerData) async {
+    String? deviceToken = await FirebaseApi().getFCMToken();
+
     final response = await http.post(
       Uri.parse('${ApiConstants.baseUrl}/api/auth/register'),
       headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode(registerData.toJson()),
+      body: jsonEncode({...registerData.toJson(), 'deviceToken': deviceToken}),
     );
     if (response.statusCode == 200) {
       Get.snackbar(
@@ -109,6 +118,7 @@ class AuthService {
 
   Future<LoginResponse?> signInWithGoogle() async {
     await Firebase.initializeApp();
+    String? deviceToken = await FirebaseApi().getFCMToken();
 
     final googleSignIn = GoogleSignIn();
     await googleSignIn.signOut();
@@ -127,7 +137,7 @@ class AuthService {
     final response = await http.post(
       Uri.parse("${ApiConstants.baseUrl}/api/auth/google"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"idToken": idToken}),
+      body: jsonEncode({"idToken": idToken, 'deviceToken': deviceToken}),
     );
 
     if (response.statusCode == 200) {

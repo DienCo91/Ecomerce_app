@@ -91,6 +91,7 @@ class Dashboard extends StatelessWidget {
             onPressed: () async {
               final googleSignIn = GoogleSignIn();
               await googleSignIn.signOut();
+              authController.clearUser();
               Get.offAll(LoginAndSignUp());
             },
             icon: const Icon(Icons.logout, color: Colors.white),

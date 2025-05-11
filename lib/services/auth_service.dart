@@ -161,4 +161,15 @@ class AuthService {
       throw Exception("Error register");
     }
   }
+
+  Future<Auth> fetchCurrentUser(String token) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/user/me');
+    final response = await http.get(url, headers: {'Authorization': token});
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body)['user'];
+      return Auth.fromJson(jsonData);
+    } else {
+      throw Exception("Error get me");
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/order/index.dart';
 import 'package:flutter_app/screens/order_detail/index.dart';
 import 'package:get/get.dart';
 
@@ -47,13 +48,17 @@ void showOrderUpdateDialog({String? title, String? body, String? id}) {
       ElevatedButton(
         onPressed: () {
           Get.back();
-          Navigator.push(
-            Get.context!,
-            MaterialPageRoute(
-              builder: (context) => OrderDetail(),
-              settings: RouteSettings(arguments: {'orderId': id, 'isAllOrder': false}),
-            ),
-          );
+          if (!body!.toLowerCase().contains('cancel')) {
+            Navigator.push(
+              Get.context!,
+              MaterialPageRoute(
+                builder: (context) => OrderDetail(),
+                settings: RouteSettings(arguments: {'orderId': id, 'isAllOrder': false}),
+              ),
+            );
+          } else {
+            Navigator.push(Get.context!, MaterialPageRoute(builder: (context) => Order()));
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.blue,

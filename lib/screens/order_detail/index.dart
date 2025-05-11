@@ -85,8 +85,8 @@ class _OrderDetailState extends State<OrderDetail> {
         builder: (BuildContext context, StateSetter setSheetState) {
           return AlertDialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            title: const Text("Cancel Order", style: TextStyle(fontWeight: FontWeight.bold)),
-            content: const Text("Are you sure you want to cancel this order?", textAlign: TextAlign.center),
+            title: const Text("Delete Order", style: TextStyle(fontWeight: FontWeight.bold)),
+            content: const Text("Are you sure you want to delete this order?", textAlign: TextAlign.center),
             actions: [
               TextButton(
                 onPressed:
@@ -108,7 +108,7 @@ class _OrderDetailState extends State<OrderDetail> {
                             _isLoading = true;
                           });
                         },
-                child: Text("Cancel Order", style: TextStyle(color: _isLoading ? Colors.grey : Colors.white)),
+                child: Text("Delete Order", style: TextStyle(color: _isLoading ? Colors.grey : Colors.white)),
               ),
             ],
           );
@@ -208,7 +208,7 @@ class _OrderDetailState extends State<OrderDetail> {
               margin: const EdgeInsets.only(top: 24),
               child: ElevatedButton.icon(
                 onPressed: showCancelOrderDialog,
-                label: Text("Cancel Order".toUpperCase(), style: TextStyle(color: Colors.white)),
+                label: Text("Delete Order".toUpperCase(), style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
                   padding: const EdgeInsets.symmetric(vertical: 14),

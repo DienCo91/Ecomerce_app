@@ -13,7 +13,7 @@ class Order extends StatefulWidget {
 
 class _OrderState extends State<Order> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final AuthController authController = Get.find();
+  final AuthController authController = Get.put(AuthController());
 
   late bool isAdmin;
 
@@ -22,7 +22,9 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    isAdmin = authController.user.value!.user.role == "ROLE ADMIN";
+
+    final user = authController.user.value;
+    isAdmin = user != null && user.user.role == "ROLE ADMIN";
 
     _tabs =
         isAdmin

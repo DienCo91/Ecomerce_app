@@ -1,3 +1,5 @@
+import 'package:flutter_app/models/login_response.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 
 final formatter = NumberFormat('#,###');
@@ -143,13 +145,25 @@ String slugify(String input) {
   String slug = input.split('').map((char) => vietnameseMap[char] ?? char).join();
   slug = slug
       .toLowerCase()
-      .replaceAll(RegExp(r'\s+'), '-') // khoảng trắng → dấu -
-      .replaceAll(RegExp(r'[^a-z0-9\-]'), '') // loại bỏ ký tự đặc biệt
-      .replaceAll(RegExp(r'-+'), '-') // gộp dấu - liên tiếp
-      .replaceAll(RegExp(r'^-+|-+$'), ''); // xóa - ở đầu/cuối
+      .replaceAll(RegExp(r'\s+'), '-')
+      .replaceAll(RegExp(r'[^a-z0-9\-]'), '')
+      .replaceAll(RegExp(r'-+'), '-')
+      .replaceAll(RegExp(r'^-+|-+$'), '');
   return slug;
 }
 
 String formatDate(DateTime date) {
   return DateFormat('EEEE, MMM d, y').format(date);
+}
+
+String? getToken() {
+  final storage = GetStorage();
+
+  if (storage.hasData('user')) {
+    final userData = Map<String, dynamic>.from(storage.read('user'));
+    final loginResponse = LoginResponse.fromJson(userData);
+    return loginResponse.token;
+  }
+
+  return null;
 }

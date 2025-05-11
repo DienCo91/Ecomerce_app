@@ -129,7 +129,6 @@ class _MyOrderState extends State<MyOrder> {
                 final order = orders[index];
                 final String status = order.products.isNotEmpty ? order.products.first.status : "Unknown";
                 if (order.products.isEmpty) return SizedBox();
-                print('==$status');
                 return OrderItem(order: order, status: status, isAllOrder: widget.isAllOrder);
               },
             ),

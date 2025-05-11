@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/controllers/order_controller.dart';
 import 'package:flutter_app/models/orders.dart';
 import 'package:flutter_app/screens/order/widgets/order_item.dart';
@@ -24,11 +25,13 @@ class _MyOrderState extends State<MyOrder> {
   final int _pageSize = 10;
   bool _hasMore = true;
   late OrderController orderController;
+  late AuthController authController;
 
   @override
   void initState() {
     super.initState();
     orderController = Get.put(OrderController());
+    authController = Get.put(AuthController());
 
     _fetchOrders(orderController);
     _scrollController.addListener(() {
@@ -129,7 +132,11 @@ class _MyOrderState extends State<MyOrder> {
                 final order = orders[index];
                 final String status = order.products.isNotEmpty ? order.products.first.status : "Unknown";
                 if (order.products.isEmpty) return SizedBox();
-                return OrderItem(order: order, status: status, isAllOrder: widget.isAllOrder);
+                return OrderItem(
+                  order: order,
+                  status: status,
+                  isEdit: authController.user.value?.user.role == "ROLE ADMIN",
+                );
               },
             ),
           );

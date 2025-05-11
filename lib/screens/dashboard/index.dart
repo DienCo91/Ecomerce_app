@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/screens/account_details.dart/index.dart';
 import 'package:flutter_app/screens/account_security/index.dart';
-import 'package:flutter_app/screens/login_signup/index.dart';
 import 'package:flutter_app/screens/order/index.dart';
 import 'package:flutter_app/screens/products_manage/index.dart';
 import 'package:flutter_app/screens/review/index.dart';
@@ -11,8 +10,15 @@ import 'package:flutter_app/widgets/header.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class Dashboard extends StatelessWidget {
-  const Dashboard({super.key});
+class DashBoard extends StatefulWidget {
+  const DashBoard({super.key});
+
+  @override
+  State<DashBoard> createState() => _DashBoardState();
+}
+
+class _DashBoardState extends State<DashBoard> {
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +37,18 @@ class Dashboard extends StatelessWidget {
         {"title": "Products", "icon": Icons.list, "to": ProductsManage()},
         {"title": "Users", "icon": Icons.people, "to": UserList()},
       ]);
+    }
+
+    void handleLogout() async {
+      setState(() {
+        isLoading = true;
+      });
+      final googleSignIn = GoogleSignIn();
+      await googleSignIn.signOut();
+      await authController.clearUser();
+      setState(() {
+        isLoading = false;
+      });
     }
 
     return Column(
@@ -88,16 +106,21 @@ class Dashboard extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed: () async {
-              final googleSignIn = GoogleSignIn();
-              await googleSignIn.signOut();
-              authController.clearUser();
-              Get.offAll(LoginAndSignUp());
-            },
-            icon: const Icon(Icons.logout, color: Colors.white),
+            onPressed: handleLogout,
+            icon:
+                isLoading
+                    ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                      ),
+                    )
+                    : const Icon(Icons.logout, color: Colors.white),
             label: const Text("Logout", style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
+              backgroundColor: isLoading ? Colors.grey : Colors.redAccent,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),

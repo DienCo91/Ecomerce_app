@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
   final AuthController user = Get.put(AuthController());
   int _selectIndex = 0;
 
-  static const List<Widget> _widgetOption = <Widget>[Shop(title: "Shop"), Wishlist(), CardByUser(), Dashboard()];
+  static const List<Widget> _widgetOption = <Widget>[Shop(title: "Shop"), Wishlist(), CardByUser(), DashBoard()];
 
   static const List<BottomNavigationBarItem> _bottomNavigationBarItems = [
     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Shop"),

@@ -6,7 +6,6 @@ import 'package:flutter_app/screens/product_manage_detail/index.dart';
 import 'package:flutter_app/services/product_service.dart';
 import 'package:flutter_app/utils/api_constants.dart';
 import 'package:flutter_app/utils/assets_image.dart';
-import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:get/get.dart';
 
 class Item extends StatelessWidget {
@@ -82,14 +81,17 @@ class Item extends StatelessWidget {
           children: [
             Row(
               children: [
-                Image.network(
-                  '${ApiConstants.baseUrl}${product?.imageUrl}',
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image(image: AssetsImages.defaultImage, width: 100, height: 100, fit: BoxFit.cover);
-                  },
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: Image.network(
+                    '${ApiConstants.baseUrl}${product?.imageUrl}',
+                    width: 100,
+                    height: 84,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image(image: AssetsImages.defaultImage, width: 100, height: 84, fit: BoxFit.contain);
+                    },
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(

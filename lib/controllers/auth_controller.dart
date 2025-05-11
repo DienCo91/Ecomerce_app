@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_app/models/auth.dart';
 import 'package:flutter_app/models/login_response.dart';
+import 'package:flutter_app/screens/login_signup/index.dart';
 import 'package:flutter_app/services/auth_service.dart';
+import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -25,7 +28,7 @@ class AuthController extends GetxController {
         user.value = LoginResponse(success: loginResponse.success, token: loginResponse.token, user: currentUser);
       } catch (e) {
         print("Error get user ======= $e");
-        clearUser();
+        await clearUser();
       }
     }
   }
@@ -35,9 +38,16 @@ class AuthController extends GetxController {
     _storage.write('user', authData.toJson());
   }
 
-  void clearUser() {
-    user.value = null;
-    _storage.remove('user');
+  Future clearUser() async {
+    try {
+      await AuthService().logout();
+      user.value = null;
+      _storage.remove('user');
+      Get.offAll(LoginAndSignUp());
+    } catch (e) {
+      print(e);
+      showSnackBar(message: "Logout Failed", backgroundColor: Colors.red);
+    }
   }
 
   void setUserDetail(Auth authData) {

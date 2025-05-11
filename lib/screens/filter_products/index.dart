@@ -28,7 +28,7 @@ class _FilterProductsState extends State<FilterProducts> {
     "category": "all",
     "brand": "all",
     "min": 1,
-    "max": 2500,
+    "max": 5000,
     "rating": 0,
     "order": 0,
     "page": 1,

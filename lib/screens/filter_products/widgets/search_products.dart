@@ -23,7 +23,7 @@ class _SearchProductsState extends State<SearchProducts> {
   TextEditingController _searchController = TextEditingController();
 
   Map<String, num> typeSelectedValue = {};
-  RangeValues _currentRangeValues = const RangeValues(1, 2500);
+  RangeValues _currentRangeValues = const RangeValues(1, 5000);
   double rating = 0;
 
   void _handleSuggestion(String name) async {

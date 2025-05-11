@@ -21,7 +21,7 @@ class Filter extends StatefulWidget {
 
 class _FilterState extends State<Filter> {
   String? selectedValue = listDropDown[0]['label'] as String;
-  RangeValues _currentRangeValues = const RangeValues(1, 2500);
+  RangeValues _currentRangeValues = const RangeValues(1, 5000);
   double rating = 0;
 
   void onPressed() async {

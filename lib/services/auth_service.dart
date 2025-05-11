@@ -12,6 +12,7 @@ import 'package:flutter_app/models/user.dart';
 import 'package:flutter_app/utils/api_constants.dart';
 import 'package:flutter_app/utils/firebase_api.dart';
 import 'package:flutter_app/utils/showSnackBar.dart';
+import 'package:flutter_app/utils/string.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -170,6 +171,18 @@ class AuthService {
       return Auth.fromJson(jsonData);
     } else {
       throw Exception("Error get me");
+    }
+  }
+
+  Future logout() async {
+    String? token = getToken() ?? "";
+
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/auth/logout');
+    final response = await http.post(url, headers: {'Authorization': token});
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception("Error logout");
     }
   }
 }

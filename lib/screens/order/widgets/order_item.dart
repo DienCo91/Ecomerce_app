@@ -8,12 +8,12 @@ import 'package:flutter_app/utils/string.dart';
 import 'package:get/get.dart';
 
 class OrderItem extends StatelessWidget {
-  const OrderItem({super.key, this.order, this.status, this.isAllOrder = false});
+  const OrderItem({super.key, this.order, this.status, this.isEdit = false});
 
   final Orders? order;
 
   final String? status;
-  final bool? isAllOrder;
+  final bool? isEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class OrderItem extends StatelessWidget {
         OrderDetail(),
         transition: Transition.rightToLeftWithFade,
         duration: const Duration(milliseconds: 300),
-        arguments: {'order': order, 'status': status, 'isAllOrder': isAllOrder},
+        arguments: {'order': order, 'status': status, 'isAllOrder': isEdit},
       );
     }
 

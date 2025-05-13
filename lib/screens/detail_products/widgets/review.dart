@@ -108,9 +108,9 @@ class _ReviewProductState extends State<ReviewProduct> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color.fromARGB(33, 0, 0, 0), // Màu sắc bóng
-                    blurRadius: 4, // Độ mờ của bóng
-                    offset: Offset(0, 1), // Vị trí bóng (Offset(x, y))
+                    color: const Color.fromARGB(33, 0, 0, 0), 
+                    blurRadius: 4, 
+                    offset: Offset(0, 1),
                   ),
                 ],
                 borderRadius: BorderRadius.all(Radius.circular(8)),

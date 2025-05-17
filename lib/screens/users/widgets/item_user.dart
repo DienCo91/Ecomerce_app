@@ -42,7 +42,7 @@ class ItemUser extends StatelessWidget {
           radius: 30,
           backgroundColor: Colors.blue,
           child: Text(
-            '${user?.firstName[0] ?? ""}${user?.lastName != '' ? user?.lastName[0] : ""}',
+            '${user?.firstName != '' ? user?.firstName[0] : ""}${user?.lastName != '' ? user?.lastName[0] : ""}',
             style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/models/orders.dart';
 import 'package:flutter_app/screens/order/widgets/image_item.dart';
 import 'package:flutter_app/screens/order_detail/index.dart';
@@ -78,7 +79,7 @@ class OrderItem extends StatelessWidget {
                       const SizedBox(height: 4),
                       if (order != null)
                         Text(
-                          "Order Total: \$${(order!.total + order!.totalTax).toStringAsFixed(2)}",
+                          "Order Total: ${formatCurrency(order!.total + order!.totalTax)}",
                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                     ],

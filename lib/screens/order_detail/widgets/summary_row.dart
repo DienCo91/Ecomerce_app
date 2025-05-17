@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/utils.dart';
 import 'package:intl/intl.dart';
 
 class SummaryRow extends StatelessWidget {
@@ -14,11 +15,6 @@ class SummaryRow extends StatelessWidget {
     this.isBold = false,
     this.isHighlight = false,
   });
-
-  String formatCurrency(double amount) {
-    final formatCurrency = NumberFormat.simpleCurrency(locale: 'en_US');
-    return formatCurrency.format(amount);
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -41,10 +41,13 @@ class ItemUser extends StatelessWidget {
         CircleAvatar(
           radius: 30,
           backgroundColor: Colors.blue,
-          child: Text(
-            '${user?.firstName != '' ? user?.firstName[0] : ""}${user?.lastName != '' ? user?.lastName[0] : ""}',
-            style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-          ),
+          child:
+              user != null
+                  ? Text(
+                    '${user?.firstName != '' ? user?.firstName[0] : ""}${user?.lastName != '' ? user?.lastName[0] : ""}',
+                    style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                  )
+                  : Text(""),
         ),
         const SizedBox(width: 16),
         Expanded(

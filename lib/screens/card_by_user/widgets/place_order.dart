@@ -117,7 +117,10 @@ class _PlaceOrderState extends State<PlaceOrder> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Total: \$ ${widget.totalPrice}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(
+                "Total: ${formatCurrency(widget.totalPrice.toDouble())}",
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               TextButton(
                 onPressed: isLoading ? null : () => handleOrder(widget.listProductByUser),
                 child:

@@ -126,6 +126,7 @@ class _LoginState extends State<Login> {
                     child: Column(
                       children: [
                         TextFormFieldCustom(
+                          key: const Key("email_field"),
                           controllerInput: _controllerInputEmail,
                           onFieldSubmitted: (value) => _focusNodePassword.requestFocus(),
                           type: FieldType.email,
@@ -134,16 +135,19 @@ class _LoginState extends State<Login> {
                         ),
                         SizedBox(height: 20),
                         TextFormFieldCustom(
+                          key: const Key("password_field"),
                           controllerInput: _controllerInputPassword,
                           type: FieldType.password,
                           label: "Password",
                           prefixIcon: Icon(Icons.password),
                           focusNode: _focusNodePassword,
+                          onFieldSubmitted: (_) => handleLogin,
                         ),
                         Container(
                           width: double.infinity,
                           margin: EdgeInsets.only(top: 32),
                           child: ElevatedButton.icon(
+                            key: const Key('login_button'),
                             onPressed: handleLogin,
                             label: Padding(
                               padding: const EdgeInsets.only(top: 10, bottom: 10),

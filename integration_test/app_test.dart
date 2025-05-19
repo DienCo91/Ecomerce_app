@@ -13,8 +13,8 @@ void main() {
     await Firebase.initializeApp();
   });
 
-  group('end-to-end test', () {
-    testWidgets('tap on the floating action button, verify counter', (tester) async {
+  group('automation test', () {
+    testWidgets('Login Success', (tester) async {
       await tester.pumpWidget(const GetMaterialApp(home: LoginAndSignUp()));
 
       await tester.pump();
@@ -45,6 +45,42 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Shop'), findsWidgets);
+    });
+
+    testWidgets('Login Validate', (tester) async {
+      await tester.pumpWidget(const GetMaterialApp(home: LoginAndSignUp()));
+
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.byKey(const ValueKey('login_button')));
+
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Email required !'), findsWidgets);
+      expect(find.text('Password required !'), findsWidgets);
+    });
+
+    testWidgets('Sign Up Validate', (tester) async {
+      await tester.pumpWidget(const GetMaterialApp(home: LoginAndSignUp()));
+
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Sign Up'), findsWidgets);
+
+      final signUpTab = find.widgetWithText(Tab, 'Sign Up');
+      await tester.tap(signUpTab);
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byKey(const ValueKey('login_link')), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Sign up'));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('Email required !'), findsWidgets);
+      expect(find.text('Password required !'), findsWidgets);
+      expect(find.text('First Name required !'), findsWidgets);
+      expect(find.text('Last Name required !'), findsWidgets);
     });
   });
 }

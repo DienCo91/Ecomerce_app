@@ -20,10 +20,19 @@ class _AccountSecurityState extends State<AccountSecurity> {
   final _controllerCurrentPassword = TextEditingController();
   final _controllerNewPassword = TextEditingController();
   final _controllerConfirmPassword = TextEditingController();
-  final FocusNode _focusCurrentPassword = FocusNode();
-  final FocusNode _focusNewPassword = FocusNode();
-  final FocusNode _focusConfirmPassword = FocusNode();
+
+  final _focusCurrentPassword = FocusNode();
+  final _focusNewPassword = FocusNode();
+  final _focusConfirmPassword = FocusNode();
+
   bool _isLoading = false;
+  late final AuthController _authController;
+
+  @override
+  void initState() {
+    super.initState();
+    _authController = Get.find<AuthController>();
+  }
 
   @override
   void dispose() {
@@ -36,64 +45,25 @@ class _AccountSecurityState extends State<AccountSecurity> {
     super.dispose();
   }
 
-  void _handleSave(AuthController authController) async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+  Future<void> _handleSave() async {
+    if (!_formKey.currentState!.validate()) return;
 
-      try {
-        await AuthService().resetPassword(
-          confirmPassword: _controllerConfirmPassword.text,
-          password: _controllerCurrentPassword.text,
-        );
-        await authController.clearUser();
-      } catch (e) {
-        print(e);
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+    setState(() => _isLoading = true);
+    try {
+      await AuthService().resetPassword(
+        password: _controllerCurrentPassword.text,
+        confirmPassword: _controllerConfirmPassword.text,
+      );
+      await _authController.clearUser();
+    } catch (e) {
+      print('Error resetting password: $e');
+    } finally {
+      setState(() => _isLoading = false);
     }
-  }
-
-  Widget _buildPasswordField({
-    required String label,
-    required TextEditingController controller,
-    required FocusNode focusNode,
-    FocusNode? nextFocus,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: TextFormFieldCustom(
-        controllerInput: controller,
-        focusNode: focusNode,
-        label: label,
-        type: FieldType.password,
-        prefixIcon: Icon(Icons.lock, color: Colors.blue),
-        validator: (String value) {
-          if (value.isEmpty) return 'Please enter $label';
-          if (label == "Confirm Password" && value != _controllerNewPassword.text) {
-            return 'Passwords do not match';
-          }
-          return null;
-        },
-        onFieldSubmitted: (_) {
-          if (nextFocus != null) {
-            FocusScope.of(context).requestFocus(nextFocus);
-          } else {
-            focusNode.unfocus();
-          }
-        },
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final authController = Get.find<AuthController>();
-
     return AppScaffold(
       appBar: AppBar(toolbarHeight: 0),
       body: SingleChildScrollView(
@@ -107,22 +77,27 @@ class _AccountSecurityState extends State<AccountSecurity> {
               key: _formKey,
               child: Column(
                 children: [
-                  _buildPasswordField(
+                  _PasswordField(
                     label: "Current Password",
                     controller: _controllerCurrentPassword,
                     focusNode: _focusCurrentPassword,
                     nextFocus: _focusNewPassword,
                   ),
-                  _buildPasswordField(
+                  _PasswordField(
                     label: "New Password",
                     controller: _controllerNewPassword,
                     focusNode: _focusNewPassword,
                     nextFocus: _focusConfirmPassword,
                   ),
-                  _buildPasswordField(
+                  _PasswordField(
                     label: "Confirm Password",
                     controller: _controllerConfirmPassword,
                     focusNode: _focusConfirmPassword,
+                    validator: (value) {
+                      if (value.isEmpty) return 'Please enter Confirm Password';
+                      if (value != _controllerNewPassword.text) return 'Passwords do not match';
+                      return null;
+                    },
                   ),
                 ],
               ),
@@ -131,7 +106,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: !_isLoading ? () => _handleSave(authController) : null,
+                onPressed: _isLoading ? null : _handleSave,
                 icon: const Icon(Icons.save, color: Colors.white),
                 label: const Text("Reset password", style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
@@ -143,6 +118,45 @@ class _AccountSecurityState extends State<AccountSecurity> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _PasswordField extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final FocusNode? nextFocus;
+  final String? Function(String)? validator;
+
+  const _PasswordField({
+    required this.label,
+    required this.controller,
+    required this.focusNode,
+    this.nextFocus,
+    this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: TextFormFieldCustom(
+        controllerInput: controller,
+        focusNode: focusNode,
+        label: label,
+        type: FieldType.password,
+        prefixIcon: const Icon(Icons.lock, color: Colors.blue),
+        validator: validator ??
+            (value) => value.isEmpty ? 'Please enter $label' : null,
+        onFieldSubmitted: (_) {
+          if (nextFocus != null) {
+            FocusScope.of(context).requestFocus(nextFocus);
+          } else {
+            focusNode.unfocus();
+          }
+        },
       ),
     );
   }

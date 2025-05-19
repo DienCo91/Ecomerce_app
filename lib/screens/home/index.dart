@@ -17,12 +17,18 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final AuthController user = Get.put(AuthController());
-  int _selectIndex = 0;
+  final AuthController _authControllerInstance = Get.put(AuthController());
+  late PageController _pageController;
+  int _currentTabIndex = 0;
 
-  static const List<Widget> _widgetOption = <Widget>[Shop(title: "Shop"), Wishlist(), CardByUser(), DashBoard()];
+  final Map<int, Widget> _tabScreens = {
+    0: Shop(title: "Shop"),
+    1: Wishlist(),
+    2: CardByUser(),
+    3: DashBoard(),
+  };
 
-  static const List<BottomNavigationBarItem> _bottomNavigationBarItems = [
+  final List<BottomNavigationBarItem> _bottomNavItems = const [
     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Shop"),
     BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Wishlist"),
     BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Card"),
@@ -32,42 +38,72 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    final args = Get.arguments;
+    _pageController = PageController(initialPage: 0);
+
     if (initialFirebaseMessage != null) {
-      FirebaseApi().handleMessage(initialFirebaseMessage!);
-      initialFirebaseMessage = null;
+      Future.microtask(() {
+        FirebaseApi().handleMessage(initialFirebaseMessage!);
+        initialFirebaseMessage = null;
+      });
     }
-    if (args != null && args is Map && args['tabIndex'] != null) {
-      _selectIndex = args['tabIndex'];
+
+    final dynamic receivedArgs = Get.arguments;
+    if (receivedArgs != null && receivedArgs is Map && receivedArgs['tabIndex'] is int) {
+      _currentTabIndex = receivedArgs['tabIndex'];
+      _pageController = PageController(initialPage: _currentTabIndex);
     }
   }
 
-  void _onTabItem(int index) {
-    setState(() {
-      _selectIndex = index;
-    });
+  void _onNavigationBarItemTapped(int index) {
+    if (_currentTabIndex != index) {
+      setState(() {
+        _currentTabIndex = index;
+      });
+      _pageController.jumpToPage(index);
+    }
+  }
+
+  Widget _buildBottomNavBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(35, 0, 0, 0),
+            blurRadius: 5,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: BottomNavigationBar(
+        currentIndex: _currentTabIndex,
+        onTap: _onNavigationBarItemTapped,
+        selectedItemColor: Colors.blue[500],
+        unselectedItemColor: const Color.fromARGB(104, 0, 0, 0),
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        items: _bottomNavItems,
+      ),
+    );
+  }
+
+  Widget _getTabBody() {
+    return PageView.builder(
+      controller: _pageController,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _tabScreens.length,
+      itemBuilder: (context, index) {
+        return Center(child: _tabScreens[index]);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      appBar: AppBar(toolbarHeight: 0, title: null),
-      body: Center(child: _widgetOption.elementAt(_selectIndex)),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [BoxShadow(color: const Color.fromARGB(35, 0, 0, 0), blurRadius: 5, spreadRadius: 0)],
-        ),
-        child: BottomNavigationBar(
-          items: _bottomNavigationBarItems,
-          onTap: _onTabItem,
-          currentIndex: _selectIndex,
-          selectedItemColor: Colors.blue[500],
-          unselectedItemColor: const Color.fromARGB(104, 0, 0, 0),
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-        ),
-      ),
+      appBar: AppBar(toolbarHeight: 0),
+      body: _getTabBody(),
+      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 }

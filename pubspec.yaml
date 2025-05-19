@@ -28,11 +28,11 @@ dependencies:
   intl: ^0.20.2
   get_storage: ^2.1.1
   flutter_launcher_icons: ^0.14.3
-  flutter_native_splash: ^2.4.4
   google_sign_in: ^6.3.0
   firebase_auth: ^5.5.3
   image_picker: ^1.1.2
   path: ^1.9.1
+  flutter_stripe: ^11.5.0
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -41,22 +41,14 @@ flutter_launcher_icons:
   min_sdk_android: 21
 
 
-flutter_native_splash:
-   color: "#ffffffff"
-   image: assets/images/logo.png
-   android: true
-   ios: false
-   android_gravity: fill
-   android_12:
-     color: "#ffffffff"
-     image: assets/images/logo.png
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^5.0.0
+  integration_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true

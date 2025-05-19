@@ -26,3 +26,8 @@ Products fakeData = Products(
   totalReviews: 25,
   averageRating: 4.5,
 );
+
+const stripePublishableKey =
+    'pk_test_51RPkEVR1Dl2JWLRUZcDjJZNi6tBNUejiWDBIF69wep0uQ15069axzWwX4OTH6dtFOyDSA9XnRBxeDzrPlIvpEusw00N3FTRhIn';
+const stripeSecretkey =
+    'sk_test_51RPkEVR1Dl2JWLRUJev8ec0z74m0ztAFhkJ4HcthbGBPrs2WmxgTEWCZFej1JsRslDWPVHG4Nb0D4iJc4GmI0VKJ00MonV11s5';

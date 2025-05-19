@@ -179,6 +179,7 @@ class _SignUpState extends State<SignUp> {
                           ),
 
                           Row(
+                            key: const ValueKey('login_link'),
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text("Already have an account ?"),

@@ -89,6 +89,7 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: widget.key,
       focusNode: widget._focusNode,
       controller: widget._controllerInput,
       style: TextStyle(fontSize: 18),

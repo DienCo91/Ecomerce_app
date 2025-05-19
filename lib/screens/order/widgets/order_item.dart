@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/models/orders.dart';
 import 'package:flutter_app/screens/order/widgets/image_item.dart';
 import 'package:flutter_app/screens/order_detail/index.dart';
@@ -8,12 +9,12 @@ import 'package:flutter_app/utils/string.dart';
 import 'package:get/get.dart';
 
 class OrderItem extends StatelessWidget {
-  const OrderItem({super.key, this.order, this.status, this.isAllOrder = false});
+  const OrderItem({super.key, this.order, this.status, this.isEdit = false});
 
   final Orders? order;
 
   final String? status;
-  final bool? isAllOrder;
+  final bool? isEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class OrderItem extends StatelessWidget {
         OrderDetail(),
         transition: Transition.rightToLeftWithFade,
         duration: const Duration(milliseconds: 300),
-        arguments: {'order': order, 'status': status, 'isAllOrder': isAllOrder},
+        arguments: {'order': order, 'status': status, 'isAllOrder': isEdit},
       );
     }
 
@@ -78,7 +79,7 @@ class OrderItem extends StatelessWidget {
                       const SizedBox(height: 4),
                       if (order != null)
                         Text(
-                          "Order Total: \$${(order!.total + order!.totalTax).toStringAsFixed(2)}",
+                          "Order Total: ${formatCurrency(order!.total + order!.totalTax)}",
                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                     ],

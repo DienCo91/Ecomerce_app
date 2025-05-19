@@ -46,10 +46,7 @@ class _CategoryState extends State<Category> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Categories",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          Text("Categories", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
 
           Skeletonizer(
             enabled: _isLoading,
@@ -61,29 +58,17 @@ class _CategoryState extends State<Category> {
                 itemCount: _isLoading ? 4 : _category.length,
 
                 itemBuilder: (context, index) {
-                  String name =
-                      _category.length > 0 && _category[index].name.isNotEmpty
-                          ? _category[index].name
-                          : "";
+                  String name = _category.length > 0 && _category[index].name.isNotEmpty ? _category[index].name : "";
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 2),
-                    constraints: const BoxConstraints(maxWidth: 80),
+                    constraints: const BoxConstraints(maxWidth: 180),
                     child: FilledButton(
                       onPressed: () {},
                       style: ButtonStyle(
-                        backgroundColor: const WidgetStatePropertyAll(
-                          Colors.blue,
-                        ),
-                        padding: const WidgetStatePropertyAll(
-                          EdgeInsets.symmetric(horizontal: 12),
-                        ),
+                        backgroundColor: const WidgetStatePropertyAll(Colors.blue),
+                        padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 12)),
                       ),
-                      child: Text(
-                        name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        softWrap: false,
-                      ),
+                      child: Text(name, overflow: TextOverflow.ellipsis, maxLines: 1, softWrap: false),
                     ),
                   );
                 },
@@ -91,10 +76,7 @@ class _CategoryState extends State<Category> {
             ),
           ),
           !_isLoading && _category.isEmpty
-              ? Text(
-                "No categories available",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              )
+              ? Text("No categories available", style: TextStyle(fontSize: 16, color: Colors.grey))
               : SizedBox(height: 0),
         ],
       ),

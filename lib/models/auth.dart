@@ -21,7 +21,7 @@ class Auth {
         email: json['email'] as String,
         firstName: json['firstName'] as String,
         lastName: json['lastName'] as String,
-        id: json['_id'] ?? json['id'] as String, // Kiểm tra _id hoặc id
+        id: json['_id'] ?? json['id'] as String,
         role: json['role'] as String,
         phoneNumber: json['phoneNumber'] as String?,
       );

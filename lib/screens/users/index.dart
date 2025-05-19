@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/review.dart';
-import 'package:flutter_app/screens/review/widgets/review_item.dart';
-import 'package:flutter_app/services/review_service.dart';
+import 'package:flutter_app/models/user.dart';
+import 'package:flutter_app/screens/users/widgets/item_user.dart';
+import 'package:flutter_app/services/auth_service.dart';
 import 'package:flutter_app/widgets/header.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class ReviewScreen extends StatefulWidget {
-  const ReviewScreen({super.key});
+class UserList extends StatefulWidget {
+  const UserList({super.key});
 
   @override
-  State<ReviewScreen> createState() => _ReviewScreenState();
+  State<UserList> createState() => _UserListState();
 }
 
-class _ReviewScreenState extends State<ReviewScreen> {
+class _UserListState extends State<UserList> {
   final ScrollController listViewScroll = ScrollController();
   final int limit = 10;
 
-  List<Review> reviews = [];
+  List<Users> users = [];
   bool isLoading = false;
   int page = 1;
   bool isLoadMore = true;
@@ -37,11 +37,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
   void getData() async {
     setState(() => isLoading = true);
     try {
-      final res = await ReviewService().getAllReview(page: page, limit: limit);
+      final res = await AuthService().getAllUser(page: page, limit: limit);
       setState(() {
-        reviews.addAll(res.reviews);
+        users.addAll(res.users);
         page = res.currentPage + 1;
-        isLoadMore = res.reviews.length == limit;
+        isLoadMore = res.users.length == limit;
       });
     } catch (e) {
       print(e);
@@ -58,21 +58,21 @@ class _ReviewScreenState extends State<ReviewScreen> {
         children: [
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
-            child: const Header(icon: Icons.comment, title: "Review", iconColor: Colors.blue),
+            child: const Header(icon: Icons.people, title: "User", iconColor: Colors.blue),
           ),
-          if (reviews.isEmpty && isLoading == false) Center(child: Text("Review Empty")),
           Expanded(
             child: ListView.builder(
+              shrinkWrap: true,
               controller: listViewScroll,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              itemCount: reviews.length + (isLoading ? 2 : 0),
+              itemCount: users.length + (isLoading ? 2 : 0),
               itemBuilder: (context, index) {
-                if (isLoading && index >= reviews.length) {
-                  return Skeletonizer(enabled: isLoading, child: ReviewItem());
+                if (isLoading && index >= users.length) {
+                  return Skeletonizer(enabled: isLoading, child: ItemUser());
                 }
-                final review = reviews[index];
+                final user = users[index];
 
-                return ReviewItem(review: review);
+                return ItemUser(user: user);
               },
             ),
           ),

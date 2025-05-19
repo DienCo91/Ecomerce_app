@@ -96,7 +96,7 @@ class _ShopState extends State<Shop> {
             children: [
               Search(title: widget._title),
               Carousel(),
-              Category(),
+              // Category(),
               Container(
                 margin: const EdgeInsets.only(top: 20, bottom: 8),
                 child: Column(

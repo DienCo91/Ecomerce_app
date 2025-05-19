@@ -179,6 +179,22 @@ class _ProductManageDetailState extends State<ProductManageDetail> {
                           onFieldSubmitted: (_) {},
                           isNumber: true,
                           isBlockFirstZero: true,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter the price';
+                            }
+
+                            final numValue = num.tryParse(value);
+                            if (numValue == null) {
+                              return 'Price must be a valid number';
+                            }
+
+                            if (numValue < 1 || numValue > 5000) {
+                              return 'Price must be greater than 1 and less than 5000';
+                            }
+
+                            return null;
+                          },
                         ),
                       ],
                     ),

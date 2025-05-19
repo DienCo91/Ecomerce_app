@@ -169,23 +169,12 @@ class _DetailProductState extends State<DetailProduct> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      SizedBox(height: 8),
                       Text(
                         productDetail.description,
                         style: TextStyle(color: const Color.fromARGB(112, 0, 0, 0), fontSize: 14),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(right: 16),
-                            child: Text("Brand:", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(productDetail.brand.name, style: TextStyle(color: Colors.blue)),
-                          ),
-                        ],
                       ),
                       Row(
                         children: [

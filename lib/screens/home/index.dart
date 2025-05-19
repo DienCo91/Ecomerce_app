@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/screens/Wishlist/index.dart';
 import 'package:flutter_app/screens/card_by_user/index.dart';
 import 'package:flutter_app/screens/dashboard/index.dart';
 import 'package:flutter_app/screens/shop/index.dart';
+import 'package:flutter_app/utils/firebase_api.dart';
 import 'package:flutter_app/widgets/app_scaffold.dart';
 import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -16,10 +17,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final AuthController user = Get.find();
+  final AuthController user = Get.put(AuthController());
   int _selectIndex = 0;
 
-  static const List<Widget> _widgetOption = <Widget>[Shop(title: "Shop"), Wishlist(), CardByUser(), Dashboard()];
+  static const List<Widget> _widgetOption = <Widget>[Shop(title: "Shop"), Wishlist(), CardByUser(), DashBoard()];
 
   static const List<BottomNavigationBarItem> _bottomNavigationBarItems = [
     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Shop"),
@@ -32,6 +33,10 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     final args = Get.arguments;
+    if (initialFirebaseMessage != null) {
+      FirebaseApi().handleMessage(initialFirebaseMessage!);
+      initialFirebaseMessage = null;
+    }
     if (args != null && args is Map && args['tabIndex'] != null) {
       _selectIndex = args['tabIndex'];
     }
@@ -46,7 +51,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      appBar: AppBar(toolbarHeight: 00, title: null),
+      appBar: AppBar(toolbarHeight: 0, title: null),
       body: Center(child: _widgetOption.elementAt(_selectIndex)),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

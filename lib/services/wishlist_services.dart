@@ -37,7 +37,7 @@ class WishlistServices {
 
     if (response.statusCode == 200) {
       final List<dynamic> dataResponse = jsonDecode(response.body)['wishlist'];
-      return dataResponse.map((e) => Wishlists.fromJson(e)).toList();
+      return dataResponse.where((e) => e != null).map((e) => Wishlists.fromJson(e!)).toList();
     } else {
       throw Exception("Error get Wishlist");
     }

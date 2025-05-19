@@ -47,8 +47,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
           confirmPassword: _controllerConfirmPassword.text,
           password: _controllerCurrentPassword.text,
         );
-        authController.clearUser();
-        Get.offAll(LoginAndSignUp());
+        await authController.clearUser();
       } catch (e) {
         print(e);
       } finally {

@@ -13,66 +13,62 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  final ScrollController listViewScroll = ScrollController();
-  final int limit = 10;
+  final ScrollController _scrollController = ScrollController();
+  final int _limit = 10;
 
-  List<Users> users = [];
-  bool isLoading = false;
-  int page = 1;
-  bool isLoadMore = true;
+  List<Users> _users = [];
+  bool _isLoading = false;
+  bool _hasMore = true;
+  int _currentPage = 1;
 
   @override
   void initState() {
     super.initState();
-    getData();
-    listViewScroll.addListener(scrollListener);
+    _fetchUsers();
+    _scrollController.addListener(_onScroll);
   }
 
-  void scrollListener() {
-    if (listViewScroll.position.pixels >= listViewScroll.position.maxScrollExtent - 200 && !isLoading && isLoadMore) {
-      getData();
-    }
+  void _onScroll() {
+    final nearBottom = _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200;
+    if (nearBottom && !_isLoading && _hasMore) _fetchUsers();
   }
 
-  void getData() async {
-    setState(() => isLoading = true);
+  Future<void> _fetchUsers() async {
+    setState(() => _isLoading = true);
     try {
-      final res = await AuthService().getAllUser(page: page, limit: limit);
+      final res = await AuthService().getAllUser(page: _currentPage, limit: _limit);
       setState(() {
-        users.addAll(res.users);
-        page = res.currentPage + 1;
-        isLoadMore = res.users.length == limit;
+        _users.addAll(res.users);
+        _currentPage++;
+        _hasMore = res.users.length == _limit;
       });
     } catch (e) {
-      print(e);
+      print("Error loading users: $e");
     } finally {
-      setState(() => isLoading = false);
+      setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 0),
+      appBar: AppBar(toolbarHeight: 0), // Ẩn thanh AppBar
       body: Column(
         children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            child: const Header(icon: Icons.people, title: "User", iconColor: Colors.blue),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Header(icon: Icons.people, title: "User", iconColor: Colors.blue),
           ),
           Expanded(
             child: ListView.builder(
-              shrinkWrap: true,
-              controller: listViewScroll,
+              controller: _scrollController,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              itemCount: users.length + (isLoading ? 2 : 0),
+              itemCount: _users.length + (_isLoading ? 2 : 0),
               itemBuilder: (context, index) {
-                if (isLoading && index >= users.length) {
-                  return Skeletonizer(enabled: isLoading, child: ItemUser());
+                if (_isLoading && index >= _users.length) {
+                  return const Skeletonizer(enabled: true, child: ItemUser());
                 }
-                final user = users[index];
-
-                return ItemUser(user: user);
+                return ItemUser(user: _users[index]);
               },
             ),
           ),

@@ -3,47 +3,56 @@ import 'package:flutter_app/models/user.dart';
 import 'package:intl/intl.dart';
 
 class ItemUser extends StatelessWidget {
-  const ItemUser({super.key, this.user});
+  const ItemUser({super.key, this.userData});
 
-  final Users? user;
+  final Users? userData;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        width: double.infinity,
+      child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildProfileHeader(context),
+            _buildAvatarAndName(),
             const SizedBox(height: 20),
-            _buildInfoSection('Email', user?.email ?? "#####", Icons.email_outlined),
+            _buildInfoRow(
+              icon: Icons.email_outlined,
+              label: 'Email',
+              value: userData?.email ?? "N/A",
+            ),
             const Divider(height: 24),
-            _buildInfoSection('Provider', user?.provider ?? 'Email', Icons.login_outlined),
+            _buildInfoRow(
+              icon: Icons.login_outlined,
+              label: 'Provider',
+              value: userData?.provider ?? 'Email',
+            ),
             const Divider(height: 24),
-            _buildAccountInfo(),
+            _buildAccountCreatedDate(),
             const Divider(height: 24),
-            _buildRoleSection(),
+            _buildUserRole(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildAvatarAndName() {
+    final initials = "${userData?.firstName?.characters.firstOrNull ?? ''}${userData?.lastName?.characters.firstOrNull ?? ''}";
+
     return Row(
       children: [
         CircleAvatar(
           radius: 30,
           backgroundColor: Colors.blue,
           child: Text(
-            '${user?.firstName[0] ?? ""}${user?.lastName != '' ? user?.lastName[0] : ""}',
-            style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+            initials.toUpperCase(),
+            style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 16),
@@ -54,7 +63,7 @@ class ItemUser extends StatelessWidget {
               const Text('Name', style: TextStyle(fontSize: 14, color: Colors.grey)),
               const SizedBox(height: 4),
               Text(
-                '${user?.firstName} ${user?.lastName}',
+                "${userData?.firstName ?? ''} ${userData?.lastName ?? ''}",
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -65,7 +74,7 @@ class ItemUser extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoSection(String label, String value, IconData icon) {
+  Widget _buildInfoRow({required IconData icon, required String label, required String value}) {
     return Row(
       children: [
         Icon(icon, color: Colors.teal.shade300, size: 20),
@@ -84,34 +93,23 @@ class ItemUser extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountInfo() {
-    String formattedDate;
+  Widget _buildAccountCreatedDate() {
+    String createdDateText = 'Not available';
     try {
-      final createdDate = user?.created;
-      formattedDate = DateFormat('EEEE, MMMM d, yyyy').format(createdDate ?? DateTime.now());
-    } catch (e) {
-      formattedDate = 'Not available';
-    }
+      final createdDate = userData?.created;
+      if (createdDate != null) {
+        createdDateText = DateFormat('EEEE, MMMM d, yyyy').format(createdDate);
+      }
+    } catch (_) {}
 
-    return Row(
-      children: [
-        Icon(Icons.calendar_today_outlined, color: Colors.teal.shade300, size: 20),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Account Created', style: TextStyle(fontSize: 14, color: Colors.grey)),
-              const SizedBox(height: 4),
-              Text(formattedDate, style: const TextStyle(fontSize: 16)),
-            ],
-          ),
-        ),
-      ],
+    return _buildInfoRow(
+      icon: Icons.calendar_today_outlined,
+      label: 'Account Created',
+      value: createdDateText,
     );
   }
 
-  Widget _buildRoleSection() {
+  Widget _buildUserRole() {
     return Row(
       children: [
         Icon(Icons.badge_outlined, color: Colors.teal.shade300, size: 20),
@@ -130,7 +128,7 @@ class ItemUser extends StatelessWidget {
                   border: Border.all(color: Colors.teal.shade100),
                 ),
                 child: Text(
-                  user?.role ?? 'Member',
+                  userData?.role ?? 'Member',
                   style: TextStyle(color: Colors.teal.shade700, fontWeight: FontWeight.w500),
                 ),
               ),

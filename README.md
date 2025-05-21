@@ -16,7 +16,10 @@ Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượn
  + Làm abc 
 
 #### Việt Cường  :
- + Làm abc 
+ + Chức năng Yêu thích ( WissList ) khi User thao tác liên quan tới yêu thích 1 sản phẩm.
+ + Chức năng DashBoard bao gồm Lougout và chung chuyển tới các chức năng khác.
+ + Chức năng quản lý User khi Admin xem thông tin Users.
+ + Chức năng Detail Product khi vào 1 Product cụ thể để thao tác với sản phẩm đó vào Cart, xem thông tin chi tiết đánh giá, comment.
 
 #### Yến Nhi :
  + Làm abc 

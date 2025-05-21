@@ -19,7 +19,6 @@ class Categories {
     required this.v,
   });
 
-  // Hàm fromJson để parse từ Map (ví dụ như từ API)
   factory Categories.fromJson(Map<String, dynamic> json) {
     return Categories(
       isActive: json['isActive'],
@@ -33,7 +32,6 @@ class Categories {
     );
   }
 
-  // Hàm toJson để convert ngược lại
   Map<String, dynamic> toJson() {
     return {
       'isActive': isActive,

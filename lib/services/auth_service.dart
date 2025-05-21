@@ -185,4 +185,62 @@ class AuthService {
       throw Exception("Error logout");
     }
   }
+
+  Future verify({required String email}) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/auth/verify');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(<String, String>{'email': email}),
+    );
+    if (response.statusCode == 200) {
+      return;
+    }
+    if (response.statusCode == 404) {
+      showSnackBar(message: "User not found", backgroundColor: Colors.red);
+      throw Exception("User not found");
+    } else {
+      throw Exception("Error Verify");
+    }
+  }
+
+  Future sendOtp({required String email, required String code}) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/auth/verify-code');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(<String, String>{'email': email, 'code': code}),
+    );
+    if (response.statusCode == 200) {
+      return;
+    }
+    if (response.statusCode == 404) {
+      showSnackBar(message: "User not found", backgroundColor: Colors.red);
+      throw Exception("User not found");
+    }
+    if (response.statusCode == 400) {
+      showSnackBar(message: "Verification code is invalid or expired", backgroundColor: Colors.red);
+      throw Exception("Verification code is invalid or expired");
+    } else {
+      throw Exception("Error sendOtp");
+    }
+  }
+
+  Future changePasswordOtp({required String email, required String password}) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/auth/change-password');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(<String, String>{'email': email, 'password': password}),
+    );
+    if (response.statusCode == 200) {
+      return;
+    }
+    if (response.statusCode == 404) {
+      showSnackBar(message: "User not found", backgroundColor: Colors.red);
+      throw Exception("User not found");
+    } else {
+      throw Exception("Error ChangePasswordOtp");
+    }
+  }
 }

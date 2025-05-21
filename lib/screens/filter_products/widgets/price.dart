@@ -26,8 +26,8 @@ class Price extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             decoration: BoxDecoration(
-              color: Colors.blue.shade50, // Background color for the container
-              borderRadius: BorderRadius.circular(12), // Rounded corners
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [BoxShadow(color: const Color.fromARGB(25, 0, 0, 0), blurRadius: 8, offset: Offset(0, 4))],
             ),
             child: Text(

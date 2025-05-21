@@ -146,9 +146,9 @@ class _ShopState extends State<Shop> {
             }, childCount: _isLoading ? _products.length + 4 : _products.length),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisSpacing: 8, // khoảng cách dọc
-              crossAxisSpacing: 8, // khoảng cách ngang
-              childAspectRatio: 0.6, // tùy chỉnh tỷ lệ rộng/cao
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: 0.6,
             ),
           ),
         ),

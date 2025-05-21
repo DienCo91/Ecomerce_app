@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/constants.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
-import 'package:flutter_app/screens/login_signup/index.dart';
 import 'package:flutter_app/services/auth_service.dart';
 import 'package:flutter_app/widgets/app_scaffold.dart';
 import 'package:flutter_app/widgets/header.dart';

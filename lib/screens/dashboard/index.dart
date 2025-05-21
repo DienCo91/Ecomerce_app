@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
-import 'package:flutter_app/screens/account_details.dart/index.dart';
+import 'package:flutter_app/screens/account_details/index.dart';
 import 'package:flutter_app/screens/account_security/index.dart';
 import 'package:flutter_app/screens/order/index.dart';
 import 'package:flutter_app/screens/products_manage/index.dart';

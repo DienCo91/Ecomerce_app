@@ -1,4 +1,3 @@
-// lib/widgets/app_scaffold.dart
 import 'package:flutter/material.dart';
 
 class AppScaffold extends Scaffold {

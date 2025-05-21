@@ -78,7 +78,13 @@ class Comment extends StatelessWidget {
                                         ? Colors.amber
                                         : const Color.fromARGB(88, 158, 158, 158),
                               ),
-                              onPressed: () => controller.rating.value = index + 1,
+                              onPressed: () {
+                                if (controller.rating.value == index + 1) {
+                                  controller.rating.value = 0;
+                                } else {
+                                  controller.rating.value = index + 1;
+                                }
+                              },
                             );
                           }),
                         ),
@@ -157,13 +163,7 @@ class Comment extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color.fromARGB(33, 0, 0, 0), // Màu sắc bóng
-                      blurRadius: 2, // Độ mờ của bóng
-                      offset: Offset(0, 1), // Vị trí bóng (Offset(x, y))
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: const Color.fromARGB(33, 0, 0, 0), blurRadius: 2, offset: Offset(0, 1))],
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 child: Column(
@@ -174,7 +174,6 @@ class Comment extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            // ignore: unnecessary_string_interpolations
                             "${e.user.firstName}",
                             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                             maxLines: 1,

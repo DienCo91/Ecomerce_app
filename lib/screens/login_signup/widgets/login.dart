@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/common/constants.dart';
 import 'package:flutter_app/controllers/auth_controller.dart';
 import 'package:flutter_app/models/login_request.dart';
+import 'package:flutter_app/screens/forgot_password/index.dart';
 import 'package:flutter_app/screens/home/index.dart';
 import 'package:flutter_app/widgets/text_form_field_custome.dart';
 import 'package:flutter_app/services/auth_service.dart';
@@ -90,6 +91,10 @@ class _LoginState extends State<Login> {
     }
   }
 
+  void navigateForgotPassword() {
+    Get.to(ForgotPassword());
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -143,9 +148,24 @@ class _LoginState extends State<Login> {
                           focusNode: _focusNodePassword,
                           onFieldSubmitted: (_) => handleLogin,
                         ),
+
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: navigateForgotPassword,
+                              child: Text(
+                                "Forgot password?",
+                                style: TextStyle(color: Colors.grey[700], fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+
                         Container(
                           width: double.infinity,
-                          margin: EdgeInsets.only(top: 32),
+                          margin: EdgeInsets.only(top: 4),
                           child: ElevatedButton.icon(
                             key: const Key('login_button'),
                             onPressed: handleLogin,

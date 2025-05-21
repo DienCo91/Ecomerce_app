@@ -17,7 +17,6 @@ class Wishlists {
     required this.created,
   });
 
-  // Factory constructor để tạo Wishlists từ JSON
   factory Wishlists.fromJson(Map<String, dynamic> json) {
     return Wishlists(
       id: json['_id'] as String,

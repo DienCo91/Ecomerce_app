@@ -23,14 +23,14 @@ class ProductOrder {
 
   factory ProductOrder.fromJson(Map<String, dynamic> json) {
     return ProductOrder(
-      purchasePrice: (json['purchasePrice'] as num?)?.toDouble() ?? 0.0, // Default to 0.0 if null
-      totalPrice: (json['totalPrice'] as num?)?.toDouble() ?? 0.0, // Default to 0.0 if null
-      priceWithTax: (json['priceWithTax'] as num?)?.toDouble() ?? 0.0, // Default to 0.0 if null
-      totalTax: (json['totalTax'] as num?)?.toDouble() ?? 0.0, // Default to 0.0 if null
-      status: json['status'] ?? 'Unknown', // Default to 'Unknown' if null
-      id: json['_id'] ?? '', // Default to empty string if null
-      quantity: json['quantity'] ?? 0, // Default to 0 if null
-      product: Products.fromJson(json['product'] ?? {}), // Default to empty map if null
+      purchasePrice: (json['purchasePrice'] as num?)?.toDouble() ?? 0.0,
+      totalPrice: (json['totalPrice'] as num?)?.toDouble() ?? 0.0,
+      priceWithTax: (json['priceWithTax'] as num?)?.toDouble() ?? 0.0,
+      totalTax: (json['totalTax'] as num?)?.toDouble() ?? 0.0,
+      status: json['status'] ?? 'Unknown',
+      id: json['_id'] ?? '',
+      quantity: json['quantity'] ?? 0,
+      product: Products.fromJson(json['product'] ?? {}),
     );
   }
 

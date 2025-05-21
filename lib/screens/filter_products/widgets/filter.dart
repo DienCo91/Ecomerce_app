@@ -82,7 +82,7 @@ class _FilterState extends State<Filter> {
     );
     final selectedType = listDropDown.firstWhere((item) => item['label'] == selectedValue);
     if (selectedType.isEmpty) return;
-    final sortField = selectedType['value'].toString(); // "_id"
+    final sortField = selectedType['value'].toString();
     final sortDirection = selectedType['number'] as num;
     widget.onFilter({sortField: sortDirection}, _currentRangeValues, rating);
   }

@@ -22,10 +22,7 @@ class SortBy extends StatelessWidget {
           value: selectedValue,
           style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black),
           icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
-          underline: Container(
-            height: 2,
-            color: Colors.blue, // Màu gạch chân
-          ),
+          underline: Container(height: 2, color: Colors.blue),
           items:
               listDropDown.map<DropdownMenuItem<String>>((e) {
                 return DropdownMenuItem<String>(value: e['label'] as String, child: Text(e['label'] as String));

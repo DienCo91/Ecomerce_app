@@ -170,6 +170,22 @@ class _ProductManageDetailState extends State<ProductManageDetail> {
                           onFieldSubmitted: (_) {},
                           isNumber: true,
                           isBlockFirstZero: true,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Quantity is required';
+                            }
+
+                            final number = int.tryParse(value);
+                            if (number == null) {
+                              return 'Quantity must be an integer';
+                            }
+
+                            if (number <= 0) {
+                              return 'Quantity must be greater than 0';
+                            }
+
+                            return null;
+                          },
                         ),
                         TextFormFieldCustom(
                           controllerInput: controllerPrice,

@@ -15,7 +15,7 @@ Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượn
 #### Nguyễn Tiến Dũng :
  + Làm abc 
 
-#### Việt Cường  :
+#### Nguyễn Đình Việt Cường  :
  + Chức năng Yêu thích ( WissList ) khi User thao tác liên quan tới yêu thích 1 sản phẩm.
  + Chức năng DashBoard bao gồm Lougout và chung chuyển tới các chức năng khác.
  + Chức năng quản lý User khi Admin xem thông tin Users.

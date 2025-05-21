@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/constants.dart';
 import 'package:flutter_app/models/products.dart';
 import 'package:flutter_app/models/wishlist.dart';
 import 'package:flutter_app/screens/card_by_user/widgets/item_card.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_app/utils/showSnackBar.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class Wishlist extends StatefulWidget {
+class Wishlist extends StatefulWidget { // có thể thay đổi trạng thái và giao diện.
   const Wishlist({super.key});
 
   @override
@@ -19,80 +20,109 @@ class _WishlistState extends State<Wishlist> {
   List<Wishlists> wishlists = [];
   bool _isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadWishlist();
-  }
-
-  Future<void> _loadWishlist() async {
-    setState(() => _isLoading = true);
+  void getWishlist() async { // Hàm bất đồng bộ để lấy dữ liệu từ backend.
+    setState(() {
+      _isLoading = true;
+    });
     try {
-      wishlists = await WishlistServices().getWishlist();
+      final response = await WishlistServices().getWishlist();
+      setState(() {
+        wishlists = response;
+      });
     } catch (e) {
       print(e);
     } finally {
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
-  Future<void> _removeFromWishlist(String id) async {
+  void onDelete(String id) async {
     try {
-      final res = await WishlistServices().toggleFavorite(false, id);
+      String res = await WishlistServices().toggleFavorite(false, id);
       showSnackBar(message: res, duration: 2);
       setState(() {
-        wishlists.removeWhere((item) => item.product.id == id);
+        wishlists = wishlists.where((item) => item.product.id != id).toList(); //Cập nhật lại danh sách yêu thích .
       });
     } catch (e) {
       print(e);
     }
   }
 
-  Widget _buildHeader() => Row(
-        children: const [
-          Icon(Icons.favorite, size: 30, color: Colors.red),
-          SizedBox(width: 12),
-          Text("Wishlist", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
-        ],
-      );
-
-  Widget _buildEmptyState() => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Lottie.asset(AssetsLottie.favoriteEmpty, width: 280, height: 280),
-            const SizedBox(height: 8),
-            Text("No items found", style: TextStyle(color: Colors.grey[600], fontSize: 16)),
-          ],
-        ),
-      );
-
-  Widget _buildList() => Skeletonizer(
-        enabled: _isLoading,
-        child: ListView.builder(
-          itemCount: _isLoading ? 4 : wishlists.length,
-          padding: const EdgeInsets.only(bottom: 20),
-          itemBuilder: (context, index) {
-            final product = _isLoading ? fakeData : wishlists[index].product;
-            return ItemCard(product: product, onDelete: _removeFromWishlist, isShowQuantity: false);
-          },
-        ),
-      );
+  @override
+  void initState() {  // Khi widget được tạo ra lần đầu, gọi hàm getWishlist() để lấy dữ liệu.
+    super.initState();
+    getWishlist();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Container(   // Container chiếm toàn bộ chiều rộng và cao của màn hình.
       width: double.infinity,
       height: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 16),
+      margin: const EdgeInsets.only(top: 16, bottom: 8), // margin phía trên và dưới.
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
-          const SizedBox(height: 20),
-          Expanded(
-            child: _isLoading || wishlists.isNotEmpty ? _buildList() : _buildEmptyState(),
+          Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            child: Row(
+              children: [
+                Icon(Icons.favorite, size: 30, color: Colors.red),
+                SizedBox(width: 12),
+                Text("Wishlist", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+              ],
+            ),
           ),
+
+          if (wishlists.isEmpty && _isLoading == false)
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset(
+                      AssetsLottie.favoriteEmpty,
+                      width: 280,
+                      height: 280,
+                      fit: BoxFit.contain,
+                      repeat: true,
+                      animate: true,
+                    ),
+                    Text(
+                      "",
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1.2,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: Skeletonizer( // Hiển thị hiệu ứng skeleton khi đang loading.
+                enabled: _isLoading,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _isLoading ? 4 : wishlists.length,
+                  padding: const EdgeInsets.only(bottom: 20),
+                  itemBuilder: (context, index) {
+                    if (_isLoading) {
+                      return ItemCard(product: fakeData, onDelete: onDelete, isShowQuantity: false);
+                    }
+                    Products product = wishlists[index].product;
+
+                    return ItemCard(product: product, onDelete: onDelete, isShowQuantity: false);
+                  },
+                ),
+              ),
+            ),
         ],
       ),
     );

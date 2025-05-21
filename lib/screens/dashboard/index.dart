@@ -18,111 +18,103 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
-  bool isLoading = false;
+  final AuthController _authController = Get.find();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  bool _isLoading = false;
 
-  @override
-  Widget build(BuildContext context) {
-    AuthController authController = Get.find();
-    bool isAdmin = authController.user.value?.user.role == "ROLE ADMIN";
+  late final bool _isAdmin = _authController.user.value?.user.role == "ROLE ADMIN";
 
-    final List<Map<String, dynamic>> listDashBoard = [
-      {"title": "Account Details", "icon": Icons.person, "to": AccountDetails()},
-      {"title": "Account Security", "icon": Icons.security, "to": AccountSecurity()},
-      {"title": "Orders", "icon": Icons.shopping_cart, "to": Order()},
+  List<Map<String, dynamic>> get _dashboardItems {
+    final items = [
+      {"title": "Account Details", "icon": Icons.person, "screen": AccountDetails()},
+      {"title": "Account Security", "icon": Icons.security, "screen": AccountSecurity()},
+      {"title": "Orders", "icon": Icons.shopping_cart, "screen": Order()},
     ];
 
-    if (isAdmin) {
-      listDashBoard.addAll([
-        {"title": "Review", "icon": Icons.comment, "to": ReviewScreen()},
-        {"title": "Products", "icon": Icons.list, "to": ProductsManage()},
-        {"title": "Users", "icon": Icons.people, "to": UserList()},
+    if (_isAdmin) {
+      items.addAll([
+        {"title": "Review", "icon": Icons.comment, "screen": ReviewScreen()},
+        {"title": "Products", "icon": Icons.list, "screen": ProductsManage()},
+        {"title": "Users", "icon": Icons.people, "screen": UserList()},
       ]);
     }
 
-    void handleLogout() async {
-      setState(() {
-        isLoading = true;
-      });
-      final googleSignIn = GoogleSignIn();
-      await googleSignIn.signOut();
-      await authController.clearUser();
-      setState(() {
-        isLoading = false;
-      });
-    }
+    return items;
+  }
 
+  Future<void> _handleLogout() async {
+    setState(() => _isLoading = true);
+    await _googleSignIn.signOut();
+    await _authController.clearUser();
+    setState(() => _isLoading = false);
+  }
+
+  Widget _buildDashboardItem(Map<String, dynamic> menuItem) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          Get.to(menuItem["screen"], transition: Transition.rightToLeft, duration: const Duration(milliseconds: 300));
+        },
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.grey, width: 0.5)),
+          ),
+          child: Row(
+            children: [
+              Icon(menuItem["icon"], color: Colors.blueAccent),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  menuItem["title"],
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black87),
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        Header(icon: Icons.dashboard, iconColor: Colors.blue, title: "Dashboard"),
+        const Header(icon: Icons.dashboard, iconColor: Colors.blue, title: "Dashboard"),
 
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:
-                  listDashBoard.map((item) {
-                    return Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          Get.to(
-                            item["to"],
-                            transition: Transition.rightToLeft,
-                            duration: const Duration(milliseconds: 300),
-                          );
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                          decoration: const BoxDecoration(
-                            border: Border(bottom: BorderSide(color: Colors.grey, width: 0.5)),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(item["icon"], color: Colors.blueAccent),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Text(
-                                  item["title"],
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ),
-                              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
+              children: _dashboardItems.map(_buildDashboardItem).toList(),
             ),
           ),
         ),
 
-        Container(
+        Padding(
           padding: const EdgeInsets.all(20),
-          width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed: handleLogout,
-            icon:
-                isLoading
-                    ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    )
-                    : const Icon(Icons.logout, color: Colors.white),
+            onPressed: _handleLogout,
+            icon: _isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation(Colors.white),
+                    ),
+                  )
+                : const Icon(Icons.logout, color: Colors.white),
             label: const Text("Logout", style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(
-              backgroundColor: isLoading ? Colors.grey : Colors.redAccent,
+              backgroundColor: _isLoading ? Colors.grey : Colors.redAccent,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              minimumSize: const Size.fromHeight(48),
             ),
           ),
         ),

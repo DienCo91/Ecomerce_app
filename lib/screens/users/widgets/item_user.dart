@@ -3,56 +3,47 @@ import 'package:flutter_app/models/user.dart';
 import 'package:intl/intl.dart';
 
 class ItemUser extends StatelessWidget {
-  const ItemUser({super.key, this.userData});
+  const ItemUser({super.key, this.user});
 
-  final Users? userData;
+  final Users? user;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Card(   // Dùng Card để tạo một khung có hiệu ứng nổi (elevation) với bo góc
       elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
+      child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.all(20),
-        child: Column(
+        child: Column(  // Bên trong Card là một Column chứa các phần thông tin của user.
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildAvatarAndName(),
+            _buildProfileHeader(context),// Hiển thị avatar với 2 chữ cái đầu của tên. Tên đầy đủ được hiển thị bên cạnh avatar.
             const SizedBox(height: 20),
-            _buildInfoRow(
-              icon: Icons.email_outlined,
-              label: 'Email',
-              value: userData?.email ?? "N/A",
-            ),
+            _buildInfoSection('Email', user?.email ?? "#####", Icons.email_outlined),
             const Divider(height: 24),
-            _buildInfoRow(
-              icon: Icons.login_outlined,
-              label: 'Provider',
-              value: userData?.provider ?? 'Email',
-            ),
+            _buildInfoSection('Provider', user?.provider ?? 'Email', Icons.login_outlined),
             const Divider(height: 24),
-            _buildAccountCreatedDate(),
+            _buildAccountInfo(), // Định dạng ngày tạo tài khoản
             const Divider(height: 24),
-            _buildUserRole(),
+            _buildRoleSection(), // Vai trò người dùng
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAvatarAndName() {
-    final initials = "${userData?.firstName?.characters.firstOrNull ?? ''}${userData?.lastName?.characters.firstOrNull ?? ''}";
-
+  Widget _buildProfileHeader(BuildContext context) {
     return Row(
       children: [
         CircleAvatar(
           radius: 30,
           backgroundColor: Colors.blue,
           child: Text(
-            initials.toUpperCase(),
-            style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+            '${user?.firstName[0] ?? ""}${user?.lastName != '' ? user?.lastName[0] : ""}',
+            style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 16),
@@ -63,7 +54,7 @@ class ItemUser extends StatelessWidget {
               const Text('Name', style: TextStyle(fontSize: 14, color: Colors.grey)),
               const SizedBox(height: 4),
               Text(
-                "${userData?.firstName ?? ''} ${userData?.lastName ?? ''}",
+                '${user?.firstName} ${user?.lastName}',
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -74,7 +65,7 @@ class ItemUser extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow({required IconData icon, required String label, required String value}) {
+  Widget _buildInfoSection(String label, String value, IconData icon) {
     return Row(
       children: [
         Icon(icon, color: Colors.teal.shade300, size: 20),
@@ -93,23 +84,34 @@ class ItemUser extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountCreatedDate() {
-    String createdDateText = 'Not available';
+  Widget _buildAccountInfo() {
+    String formattedDate;
     try {
-      final createdDate = userData?.created;
-      if (createdDate != null) {
-        createdDateText = DateFormat('EEEE, MMMM d, yyyy').format(createdDate);
-      }
-    } catch (_) {}
+      final createdDate = user?.created;
+      formattedDate = DateFormat('EEEE, MMMM d, yyyy').format(createdDate ?? DateTime.now());
+    } catch (e) {
+      formattedDate = 'Not available';
+    }
 
-    return _buildInfoRow(
-      icon: Icons.calendar_today_outlined,
-      label: 'Account Created',
-      value: createdDateText,
+    return Row(
+      children: [
+        Icon(Icons.calendar_today_outlined, color: Colors.teal.shade300, size: 20),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Account Created', style: TextStyle(fontSize: 14, color: Colors.grey)),
+              const SizedBox(height: 4),
+              Text(formattedDate, style: const TextStyle(fontSize: 16)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildUserRole() {
+  Widget _buildRoleSection() {
     return Row(
       children: [
         Icon(Icons.badge_outlined, color: Colors.teal.shade300, size: 20),
@@ -128,7 +130,7 @@ class ItemUser extends StatelessWidget {
                   border: Border.all(color: Colors.teal.shade100),
                 ),
                 child: Text(
-                  userData?.role ?? 'Member',
+                  user?.role ?? 'Member',
                   style: TextStyle(color: Colors.teal.shade700, fontWeight: FontWeight.w500),
                 ),
               ),

@@ -13,62 +13,67 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  final ScrollController _scrollController = ScrollController();
-  final int _limit = 10;
+  final ScrollController listViewScroll = ScrollController();
+  final int limit = 10;
 
-  List<Users> _users = [];
-  bool _isLoading = false;
-  bool _hasMore = true;
-  int _currentPage = 1;
+  List<Users> users = [];
+  bool isLoading = false;
+  int page = 1;
+  bool isLoadMore = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchUsers();
-    _scrollController.addListener(_onScroll);
+    getData();
+    listViewScroll.addListener(scrollListener); // Gắn hàm theo dõi cuộn
   }
 
-  void _onScroll() {
-    final nearBottom = _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200;
-    if (nearBottom && !_isLoading && _hasMore) _fetchUsers();
-  }
+  void scrollListener() {
+    if (listViewScroll.position.pixels >= listViewScroll.position.maxScrollExtent - 200 && !isLoading && isLoadMore) {
+      getData();
+    }
+  } //Nếu người dùng cuộn gần cuối danh sách (cách đáy 200px), và đang không tải (!isLoading), 
+  // đồng thời còn dữ liệu cầm tải (isLoadMore) → gọi getData() để tải thêm.
 
-  Future<void> _fetchUsers() async {
-    setState(() => _isLoading = true);
+  void getData() async {
+    setState(() => isLoading = true);
     try {
-      final res = await AuthService().getAllUser(page: _currentPage, limit: _limit);
+      final res = await AuthService().getAllUser(page: page, limit: limit);
       setState(() {
-        _users.addAll(res.users);
-        _currentPage++;
-        _hasMore = res.users.length == _limit;
+        users.addAll(res.users);
+        page = res.currentPage + 1;
+        isLoadMore = res.users.length == limit;
       });
     } catch (e) {
-      print("Error loading users: $e");
+      print(e);
     } finally {
-      setState(() => _isLoading = false);
+      setState(() => isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 0), // Ẩn thanh AppBar
-      body: Column(
+    return Scaffold(        // dùng thằng này có thanh tiêu đề và body  
+      appBar: AppBar(toolbarHeight: 0),        // thanh tiêu đề không dùng
+      body: Column(   // body của scafold dùng colum với hàng đầu là container tiêu đề, dòng 2 là thẻ expand với child của nó là list view cho danh sách useruser
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Header(icon: Icons.people, title: "User", iconColor: Colors.blue),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Header(icon: Icons.people, title: "User", iconColor: Colors.blue),
           ),
           Expanded(
             child: ListView.builder(
-              controller: _scrollController,
+              shrinkWrap: true,
+              controller: listViewScroll,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              itemCount: _users.length + (_isLoading ? 2 : 0),
+              itemCount: users.length + (isLoading ? 2 : 0),
               itemBuilder: (context, index) {
-                if (_isLoading && index >= _users.length) {
-                  return const Skeletonizer(enabled: true, child: ItemUser());
+                if (isLoading && index >= users.length) {
+                  return Skeletonizer(enabled: isLoading, child: ItemUser());
                 }
-                return ItemUser(user: _users[index]);
+                final user = users[index];
+
+                return ItemUser(user: user);
               },
             ),
           ),

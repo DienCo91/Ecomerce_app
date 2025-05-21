@@ -81,10 +81,13 @@ class _SignUpState extends State<SignUp> {
       }
     }
 
-    return SingleChildScrollView(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
       child: SingleChildScrollView(
         child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height - 100),
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 100,
+          ),
           child: Stack(
             children: [
               Positioned(
@@ -97,7 +100,11 @@ class _SignUpState extends State<SignUp> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: Image(image: AssetsImages.imageBar, fit: BoxFit.cover, height: 600),
+                child: Image(
+                  image: AssetsImages.imageBar,
+                  fit: BoxFit.cover,
+                  height: 600,
+                ),
               ),
               Column(
                 children: [
@@ -117,7 +124,8 @@ class _SignUpState extends State<SignUp> {
                         children: [
                           TextFormFieldCustom(
                             controllerInput: _controllerInputEmail,
-                            onFieldSubmitted: (value) => _firstNameFocus.requestFocus(),
+                            onFieldSubmitted:
+                                (value) => _firstNameFocus.requestFocus(),
                             type: FieldType.email,
                             label: "Email",
                             prefixIcon: Icon(Icons.email),
@@ -129,7 +137,8 @@ class _SignUpState extends State<SignUp> {
                             label: "First Name",
                             prefixIcon: Icon(Icons.person),
                             focusNode: _firstNameFocus,
-                            onFieldSubmitted: (value) => _lastNameFocus.requestFocus(),
+                            onFieldSubmitted:
+                                (value) => _lastNameFocus.requestFocus(),
                           ),
                           SizedBox(height: 20),
                           TextFormFieldCustom(
@@ -138,7 +147,8 @@ class _SignUpState extends State<SignUp> {
                             label: "Last Name",
                             prefixIcon: Icon(Icons.person),
                             focusNode: _lastNameFocus,
-                            onFieldSubmitted: (value) => _passwordFocus.requestFocus(),
+                            onFieldSubmitted:
+                                (value) => _passwordFocus.requestFocus(),
                           ),
                           SizedBox(height: 20),
                           TextFormFieldCustom(
@@ -155,13 +165,28 @@ class _SignUpState extends State<SignUp> {
                               onPressed: _isLoading ? null : handleSignUp,
 
                               label: Padding(
-                                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                child: Text("Sign up", style: TextStyle(color: Colors.white, fontSize: 16)),
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  bottom: 10,
+                                ),
+                                child: Text(
+                                  "Sign up",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                               style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll<Color>(!_isLoading ? Colors.blue : Colors.grey),
+                                backgroundColor: WidgetStatePropertyAll<Color>(
+                                  !_isLoading ? Colors.blue : Colors.grey,
+                                ),
                                 shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8),
+                                    ),
+                                  ),
                                 ),
                               ),
                               icon:
@@ -171,7 +196,9 @@ class _SignUpState extends State<SignUp> {
                                         height: 20,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                                          valueColor: AlwaysStoppedAnimation(
+                                            Colors.white,
+                                          ),
                                         ),
                                       )
                                       : null,
@@ -185,7 +212,10 @@ class _SignUpState extends State<SignUp> {
                               Text("Already have an account ?"),
                               TextButton(
                                 onPressed: handleGoLogin,
-                                child: Text("Log in", style: TextStyle(color: Colors.blue)),
+                                child: Text(
+                                  "Log in",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
                               ),
                             ],
                           ),

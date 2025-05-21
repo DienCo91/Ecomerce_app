@@ -22,6 +22,9 @@ Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượn
  + Chức năng Detail Product khi vào 1 Product cụ thể để thao tác với sản phẩm đó vào Cart, xem thông tin chi tiết đánh giá, comment.
 
 #### Yến Nhi :
- + Làm abc 
+ + Chức năng Home . 
+ + Chức năng Shop.
+ + Chức năng Acount_detail.
+ + Chức năng Acount_security.
 
 

@@ -8,7 +8,8 @@ Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượn
  + Chức năng Push Notice với firebase, sử dụng khi admin thay đổi trạng thái đơn hàng 
  + Chức năng Login với google
  + Viết chức năng tự động kiểm thử cho app (bao gồm login, validate) 
- + Chức năng thanh toán 
+ + Chức năng thanh toán
+ + Chức năng gửi mail đổi mật khẩu và xác thực tài khoản
  + .....
 
 #### Nguyễn Tiến Dũng :

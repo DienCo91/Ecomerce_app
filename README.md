@@ -12,8 +12,12 @@ Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượn
  + Chức năng gửi mail đổi mật khẩu và xác thực tài khoản
  + .....
 
-#### Nguyễn Tiến Dũng :
- + Làm abc 
+#### Đặng Tiến Dũng :
+ + Chức năng đăng nhập,đăng ký email
+ + Chức năng quản lý Review
+ + Chức năng quản lý Product
+ + Chức năng Cart của user
+
 
 #### Nguyễn Đình Việt Cường  :
  + Chức năng Yêu thích ( WissList ) khi User thao tác liên quan tới yêu thích 1 sản phẩm.

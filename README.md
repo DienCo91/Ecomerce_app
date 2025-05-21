@@ -25,7 +25,7 @@ Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượn
  + Chức năng quản lý User khi Admin xem thông tin Users.
  + Chức năng Detail Product khi vào 1 Product cụ thể để thao tác với sản phẩm đó vào Cart, xem thông tin chi tiết đánh giá, comment.
 
-#### Yến Nhi :
+#### Vũ Thị Yến Nhi :
  + Chức năng Home . 
  + Chức năng Shop.
  + Chức năng Acount_detail.

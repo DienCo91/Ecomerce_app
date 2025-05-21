@@ -38,17 +38,6 @@ class AuthController extends GetxController {
     _storage.write('user', authData.toJson());
   }
 
-  Future clearUser() async {
-    try {
-      await AuthService().logout();
-      user.value = null;
-      _storage.remove('user');
-      Get.offAll(LoginAndSignUp());
-    } catch (e) {
-      print(e);
-      showSnackBar(message: "Logout Failed", backgroundColor: Colors.red);
-    }
-  }
 
   void setUserDetail(Auth authData) {
     user.value = LoginResponse(success: user.value!.success, token: user.value!.token, user: authData);

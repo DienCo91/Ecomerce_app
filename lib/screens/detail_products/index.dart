@@ -19,74 +19,59 @@ class DetailProduct extends StatefulWidget {
 }
 
 class _DetailProductState extends State<DetailProduct> {
-  final Products productDetail = Get.arguments;
+  final Products product = Get.arguments;
   int quantity = 1;
 
-  void onAddQuantity() {
-    if (quantity < productDetail.quantity) {
-      setState(() {
-        quantity += 1;
-      });
+  final CartAllUserController cartController = Get.put(CartAllUserController());
+  final AuthController authController = Get.find();
+
+  void incrementQuantity() {
+    if (quantity < product.quantity) setState(() => quantity++);
+  }
+
+  void decrementQuantity() {
+    if (quantity > 1) setState(() => quantity--);
+  }
+
+  void showSnackbar({required String title, required String message, required Color color}) {
+    Get.snackbar(
+      title,
+      message,
+      backgroundColor: color,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      duration: const Duration(seconds: 3),
+      forwardAnimationCurve: Curves.easeIn,
+      reverseAnimationCurve: Curves.easeIn,
+    );
+  }
+
+  Future<void> handleAddToCart() async {
+    await Future.delayed(Duration(seconds: 1));
+    final user = authController.user.value?.user;
+    if (user != null) {
+      final updatedProduct = product.copyWith(
+        quantity: quantity,
+        price: quantity * product.price,
+      );
+      cartController.addToCart(user.id, updatedProduct);
+      showSnackbar(title: "Add Success!", message: "Product added to cart", color: Colors.greenAccent);
     }
   }
 
-  void onRemoveQuantity() {
-    if (quantity > 1) {
-      setState(() {
-        quantity -= 1;
-      });
+  Future<void> handleRemoveFromCart() async {
+    await Future.delayed(Duration(seconds: 1));
+    final user = authController.user.value?.user;
+    if (user != null) {
+      cartController.removeFromCart(user.id, product.id);
+      showSnackbar(title: "Remove Success!", message: "Product removed from cart", color: Colors.red.shade400);
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    Get.lazyPut(() => CartAllUserController());
   }
 
   @override
   Widget build(BuildContext context) {
-    final CartAllUserController cardAllUser = Get.find();
-    final AuthController user = Get.find();
-
-    void handleAddToCard() async {
-      await Future.delayed(Duration(seconds: 1));
-      final currentUser = user.user.value?.user;
-      if (currentUser != null) {
-        final updateProduct = productDetail.copyWith(quantity: quantity, price: quantity * productDetail.price);
-        cardAllUser.addToCart(currentUser.id, updateProduct);
-        Get.snackbar(
-          "Add Success !",
-          "Add product to cart",
-          backgroundColor: Colors.greenAccent,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
-          margin: const EdgeInsets.only(top: 4, left: 20, right: 20),
-          duration: const Duration(seconds: 3),
-          forwardAnimationCurve: Curves.easeIn,
-          reverseAnimationCurve: Curves.easeIn,
-        );
-      }
-    }
-
-    void handleRemoveToCard() async {
-      await Future.delayed(Duration(seconds: 1));
-      final currentUser = user.user.value?.user;
-      if (currentUser != null) {
-        cardAllUser.removeFromCart(currentUser.id, productDetail.id);
-        Get.snackbar(
-          "Remove Success !",
-          "Remove product to cart",
-          backgroundColor: Colors.red[400],
-          colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
-          margin: const EdgeInsets.only(top: 4, left: 20, right: 20),
-          duration: const Duration(seconds: 3),
-          forwardAnimationCurve: Curves.easeIn,
-          reverseAnimationCurve: Curves.easeIn,
-        );
-      }
-    }
+    final userId = authController.user.value?.user.id ?? '';
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -99,137 +84,125 @@ class _DetailProductState extends State<DetailProduct> {
       body: SafeArea(
         top: false,
         child: Container(
-          width: double.infinity,
-          height: double.infinity,
           color: Colors.white,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 420,
-                  child: Stack(
-                    children: [
-                      FadeInImage(
-                        placeholder: AssetsImages.defaultImage,
-                        image: NetworkImage('${ApiConstants.baseUrl}${productDetail.imageUrl}'),
-                        fit: BoxFit.contain,
-                        width: double.infinity,
-                        height: double.infinity,
-                        imageErrorBuilder: (context, error, stackTrace) {
-                          return Image(
-                            image: AssetsImages.defaultImage,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          );
-                        },
-                      ),
-                      Positioned(
-                        top: 30,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(100),
-                              bottomLeft: Radius.circular(100),
-                            ),
-                            color: productDetail.quantity >= 1 ? Colors.blue : Colors.red,
-                          ),
-                          child: Text(
-                            productDetail.quantity >= 1 ? "In stock" : "Out of stock",
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                      Obx(() => IconCardNumber(number: cardAllUser.getCartByUser(user.user.value!.user.id).length)),
-                    ],
-                  ),
-                ),
-
-                Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '\$ ${formatter.format(productDetail.price * quantity)}',
-                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          productDetail.name,
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 16),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        productDetail.description,
-                        style: TextStyle(color: const Color.fromARGB(112, 0, 0, 0), fontSize: 14),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Row(
-                        children: [
-                          Text("Quantity :", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                          Row(
-                            children: [
-                              IconButton(onPressed: quantity > 1 ? onRemoveQuantity : null, icon: Icon(Icons.remove)),
-                              Text('$quantity'),
-                              IconButton(
-                                onPressed: quantity < productDetail.quantity ? onAddQuantity : null,
-                                icon: Icon(Icons.add),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      productDetail.quantity >= 1
-                          ? Obx(() {
-                            final userId = user.user.value?.user.id ?? '';
-                            bool hasProductInCart = cardAllUser.hasProductInCart(userId, productDetail.id);
-                            return Container(
-                              width: double.infinity,
-                              margin: const EdgeInsets.only(top: 8),
-                              child: ElevatedButton.icon(
-                                icon: Icon(Icons.shopping_cart, size: 24, color: Colors.white),
-                                onPressed: () {
-                                  if (hasProductInCart) {
-                                    handleRemoveToCard();
-                                  } else {
-                                    handleAddToCard();
-                                  }
-                                },
-                                label: Text(
-                                  hasProductInCart ? "Remove To Cart" : "Add To Cart",
-                                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor: WidgetStatePropertyAll(
-                                    hasProductInCart ? Colors.red[400] : Colors.blue,
-                                  ),
-                                ),
-                              ),
-                            );
-                          })
-                          : SizedBox(),
-                    ],
-                  ),
-                ),
+                buildProductImage(userId),
+                buildProductInfo(userId),
                 DividerCustom(),
-                ReviewProduct(name: productDetail.name, id: productDetail.id),
+                ReviewProduct(name: product.name, id: product.id),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildProductImage(String userId) {
+    return SizedBox(
+      height: 420,
+      child: Stack(
+        children: [
+          FadeInImage(
+            placeholder: AssetsImages.defaultImage,
+            image: NetworkImage('${ApiConstants.baseUrl}${product.imageUrl}'),
+            fit: BoxFit.contain,
+            width: double.infinity,
+            height: double.infinity,
+            imageErrorBuilder: (_, __, ___) => Image(
+              image: AssetsImages.defaultImage,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+          Positioned(
+            top: 30,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(100),
+                  bottomLeft: Radius.circular(100),
+                ),
+                color: product.quantity >= 1 ? Colors.blue : Colors.red,
+              ),
+              child: Text(
+                product.quantity >= 1 ? "In stock" : "Out of stock",
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+          Obx(() => IconCardNumber(
+                number: cartController.getCartByUser(userId).length,
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget buildProductInfo(String userId) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '\$ ${formatter.format(product.price * quantity)}',
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            product.name,
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 16),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            product.description,
+            style: const TextStyle(color: Color.fromARGB(112, 0, 0, 0), fontSize: 14),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Row(
+            children: [
+              const Text("Quantity:", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              Row(
+                children: [
+                  IconButton(onPressed: decrementQuantity, icon: const Icon(Icons.remove)),
+                  Text('$quantity'),
+                  IconButton(onPressed: incrementQuantity, icon: const Icon(Icons.add)),
+                ],
+              ),
+            ],
+          ),
+          if (product.quantity >= 1)
+            Obx(() {
+              final hasProduct = cartController.hasProductInCart(userId, product.id);
+              return SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                  label: Text(
+                    hasProduct ? "Remove From Cart" : "Add To Cart",
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+                  ),
+                  onPressed: hasProduct ? handleRemoveFromCart : handleAddToCart,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      hasProduct ? Colors.red.shade400 : Colors.blue,
+                    ),
+                  ),
+                ),
+              );
+            }),
+        ],
       ),
     );
   }

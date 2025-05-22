@@ -2,15 +2,25 @@
 ### Chủ đề:
 Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượng Người Dùng Trên Nền Tảng Android
 
+### Công nghệ sử dụng: 
++ Firebase 
++ Flutter 
++ Nodejs 
++ Mongodb
++ nodemailer
++ Stripe
 
 ### Phân Công Công Việc 
 #### Nguyễn Nhật Minh - B21DCCN527 : 
  + Chức năng Push Notice với firebase, sử dụng khi admin thay đổi trạng thái đơn hàng 
  + Chức năng Login với google
  + Viết chức năng tự động kiểm thử cho app (bao gồm login, validate) 
- + Chức năng thanh toán
- + Chức năng gửi mail đổi mật khẩu và xác thực tài khoản
- + .....
+ + Quản Lý Order của admin và user
+ + Chức năng thanh toán khi mua hàng
+ + Chức năng gửi mail OTP đổi mật khẩu 
+ + Tìm kiếm sản phẩm và Filter sản phẩm theo Rating, Price , Name, Sort 
+ + Thêm chức năng loadmore
+ + Phân chia công việc, lên lịch họp cho mọi người 
 
 #### Đặng Tiến Dũng :
  + Chức năng đăng nhập,đăng ký email

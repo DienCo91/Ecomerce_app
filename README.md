@@ -38,7 +38,7 @@ Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượn
 #### Vũ Thị Yến Nhi :
  + Chức năng Home . 
  + Chức năng Shop.
- + Chức năng Acount_detail.
- + Chức năng Acount_security.
+ + Chức năng Account_detail.
+ + Chức năng Account_security.
 
 

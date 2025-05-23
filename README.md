@@ -20,7 +20,7 @@ Xây Dựng Ứng Dụng Mua Sắm Trực Tuyến Dành Cho Mọi Đối Tượn
  + Chức năng gửi mail OTP đổi mật khẩu 
  + Tìm kiếm sản phẩm và Filter sản phẩm theo Rating, Price , Name, Sort 
  + Thêm chức năng loadmore
- + Phân chia công việc, lên lịch họp cho mọi người 
+ + Thêm màn splash và logo app 
 
 #### Đặng Tiến Dũng :
  + Chức năng đăng nhập,đăng ký email
